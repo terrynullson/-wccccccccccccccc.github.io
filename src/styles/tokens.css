@@ -1,0 +1,92 @@
+﻿:root {
+  /* Palette */
+  --c-black: #000000;
+  --c-white: #ffffff;
+  --c-bg: #f6f2ea;
+  --c-surface: #fbf9f4;
+  --c-surface-2: #f4efe6;
+  --c-border: rgba(45, 38, 23, 0.08);
+  --c-border-strong: rgba(45, 38, 23, 0.14);
+  --c-primary: #7b75b8;
+  --c-accent: #d17d52;
+  --c-danger: #b3033f;
+  --c-ink: #2d2617;
+  --c-muted: rgba(45, 38, 23, 0.62);
+  --c-focus: rgba(123, 117, 184, 0.45);
+  --c-input-bg: #ffffff;
+  --c-input-bg-2: #f4efe6;
+  --c-input-border: rgba(45, 38, 23, 0.12);
+
+  /* Typography */
+  --font-sans: "Geologica", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  --font-accent-italic: "Chiron Sung HK", "Georgia", serif;
+  --font-display: "Gogol", "Times New Roman", serif;
+  --fs-11: 11px;
+  --fs-12: 12px;
+  --fs-13: 13px;
+  --fs-14: 14px;
+  --fs-15: 15px;
+  --lh-14: 1.45;
+  --lh-13: 1.4;
+  --tracking-tight: -0.1px;
+  --tracking-normal: 0.1px;
+
+  /* Layout */
+  --topbar-h: 56px;
+  --layout-gap: 10px;
+  --side-w: 232px;
+  --side-w-collapsed: 56px;
+  --page-pad-x: 7px;
+  --radius-ui: 16px;
+  --radius-10: 10px;
+  --radius-12: 12px;
+  --radius-14: 14px;
+  --radius-16: 16px;
+  --radius-20: 20px;
+
+  /* Shadows (очень мягкие) */
+  --shadow-1: 0 8px 20px rgba(45, 38, 23, 0.10);
+  --shadow-2: 0 14px 30px rgba(45, 38, 23, 0.14);
+  --neu-shadow-1: 8px 8px 18px rgba(45, 38, 23, 0.14), -8px -8px 16px rgba(255, 255, 255, 0.9);
+  --neu-shadow-2: 12px 12px 24px rgba(45, 38, 23, 0.18), -10px -10px 20px rgba(255, 255, 255, 0.95);
+  --neu-inset: inset 6px 6px 12px rgba(45, 38, 23, 0.14), inset -6px -6px 12px rgba(255, 255, 255, 0.9);
+  --neu-inset-strong: inset 8px 8px 16px rgba(45, 38, 23, 0.18), inset -8px -8px 16px rgba(255, 255, 255, 0.95);
+
+  /* Borders */
+  --border: 1px solid transparent;
+
+  /* Spacing scale */
+  --s-4: 4px;
+  --s-6: 6px;
+  --s-8: 8px;
+  --s-10: 10px;
+  --s-12: 12px;
+  --s-16: 16px;
+  --s-20: 20px;
+}
+
+[data-theme="dark"] {
+  --c-bg: #4f473f;
+  --c-surface: #6a6157;
+  --c-surface-2: #756b60;
+  --c-border: rgba(255, 255, 255, 0.12);
+  --c-border-strong: rgba(255, 255, 255, 0.2);
+  --c-primary: #9b93e0;
+  --c-accent: #e39a73;
+  --c-danger: #d85b7a;
+  --c-ink: #ffffff;
+  --c-muted: rgba(255, 255, 255, 0.72);
+  --c-focus: rgba(155, 147, 224, 0.55);
+  --c-input-bg: #6f655b;
+  --c-input-bg-2: #756b60;
+  --c-input-border: rgba(255, 255, 255, 0.18);
+
+  --shadow-1: 0 10px 22px rgba(0, 0, 0, 0.55);
+  --shadow-2: 0 18px 36px rgba(0, 0, 0, 0.7);
+  --neu-shadow-1: 6px 6px 16px rgba(0, 0, 0, 0.5), -6px -6px 12px rgba(255, 255, 255, 0.04);
+  --neu-shadow-2: 10px 10px 22px rgba(0, 0, 0, 0.6), -8px -8px 16px rgba(255, 255, 255, 0.05);
+  --neu-inset: inset 4px 4px 8px rgba(0, 0, 0, 0.55), inset -4px -4px 8px rgba(255, 255, 255, 0.05);
+  --neu-inset-strong: inset 6px 6px 12px rgba(0, 0, 0, 0.65), inset -6px -6px 12px rgba(255, 255, 255, 0.05);
+}
+
+

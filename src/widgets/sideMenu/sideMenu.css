@@ -1,0 +1,293 @@
+﻿.wcc-side {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: var(--side-menu-w, var(--side-w-collapsed, 56px));
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 40;
+  padding: 8px 0 12px;
+  border-radius: var(--radius-ui, 16px);
+  border: none;
+  background: var(--c-surface);
+  box-shadow: var(--shadow-1);
+  overflow: hidden;
+  transition: width 180ms ease, background 180ms ease, box-shadow 180ms ease;
+  --side-pad-left: 12px;
+  --side-pad-right: 12px;
+  --side-icon-col: 32px;
+}
+
+[data-theme="dark"] .wcc-side {
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.6);
+  outline: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--c-surface);
+}
+
+.wcc-side.is-open {
+  box-shadow: var(--shadow-2);
+}
+
+.wcc-side__burger {
+  width: var(--side-icon-col);
+  height: var(--side-icon-col);
+  border-radius: var(--radius-ui, 16px);
+  border: none;
+  background: var(--c-surface);
+  box-shadow: var(--shadow-1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  cursor: pointer;
+  margin-left: var(--side-pad-left);
+  align-self: flex-start;
+  transition: gap 160ms ease, box-shadow 160ms ease;
+}
+
+.wcc-side__burger:hover {
+  box-shadow: var(--shadow-2);
+}
+
+.wcc-side__burger:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.wcc-side__burger span {
+  display: block;
+  width: 12px;
+  height: 2px;
+  border-radius: 2px;
+  background: rgba(45, 38, 23, 0.72);
+  transition: transform 160ms ease, opacity 160ms ease, width 160ms ease, height 160ms ease, border-radius 160ms ease;
+}
+
+[data-theme="dark"] .wcc-side__burger span {
+  background: rgba(247, 243, 236, 0.78);
+}
+
+.wcc-side__menu {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px 0 0;
+}
+
+.wcc-side__section {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.wcc-side__item {
+  height: 40px;
+  border-radius: 0;
+  border: none;
+  background: transparent;
+  text-align: left;
+  width: 100%;
+  padding: 0 var(--side-pad-right) 0 var(--side-pad-left);
+  font-size: var(--fs-12);
+  color: rgba(45, 38, 23, 0.9);
+  cursor: pointer;
+  display: grid;
+  grid-template-columns: var(--side-icon-col) 1fr auto;
+  align-items: center;
+  column-gap: 4px;
+  transition: background 140ms ease, box-shadow 140ms ease, transform 120ms ease, color 140ms ease;
+}
+
+.wcc-side__item:hover {
+  background: var(--c-surface);
+  box-shadow: var(--shadow-1);
+}
+
+.wcc-side__item.is-active {
+  background: var(--c-surface);
+  box-shadow: inset 0 0 0 1px rgba(123, 117, 184, 0.18);
+  color: var(--c-ink);
+}
+
+.wcc-side__icon {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  justify-self: center;
+  color: var(--c-muted);
+}
+
+.wcc-side__item.is-active .wcc-side__icon {
+  color: var(--c-primary);
+}
+
+.wcc-side__chevron {
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(45, 38, 23, 0.45);
+  transition: transform 160ms ease, color 160ms ease;
+}
+
+.wcc-side__chevron svg {
+  width: 16px;
+  height: 16px;
+}
+
+.wcc-side__chevron.is-open {
+  transform: rotate(180deg);
+  color: rgba(123, 117, 184, 0.9);
+}
+
+.wcc-side__sub {
+  margin-left: calc(var(--side-icon-col) + 8px);
+  display: grid;
+  gap: 3px;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 180ms ease, opacity 180ms ease;
+}
+
+.wcc-side__sub.is-open {
+  max-height: 260px;
+  opacity: 1;
+}
+
+.wcc-side__subItem {
+  height: 32px;
+  border-radius: 10px 0 0 10px;
+  border: 1px solid rgba(123, 117, 184, 0.12);
+  background: rgba(255, 255, 255, 0.4);
+  text-align: left;
+  font-size: 12px;
+  color: rgba(45, 38, 23, 0.8);
+  padding: 0 12px;
+  cursor: pointer;
+  transition: background 140ms ease, color 140ms ease, border-color 140ms ease;
+}
+
+.wcc-side__subItem:hover {
+  background: rgba(123, 117, 184, 0.12);
+  border-color: rgba(123, 117, 184, 0.28);
+}
+
+[data-theme="dark"] .wcc-side__icon {
+  color: rgba(244, 239, 230, 0.7);
+}
+
+[data-theme="dark"] .wcc-side__item.is-active .wcc-side__icon {
+  color: rgba(244, 239, 230, 0.95);
+}
+
+[data-theme="dark"] .wcc-side__item {
+  color: var(--c-muted);
+}
+
+[data-theme="dark"] .wcc-side__item:hover {
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: var(--shadow-1);
+}
+
+[data-theme="dark"] .wcc-side__item.is-active {
+  background: rgba(155, 147, 224, 0.2);
+  box-shadow: inset 0 0 0 1px rgba(155, 147, 224, 0.38);
+  color: var(--c-ink);
+}
+
+[data-theme="dark"] .wcc-side__chevron {
+  color: rgba(244, 239, 230, 0.5);
+}
+
+[data-theme="dark"] .wcc-side__chevron.is-open {
+  color: rgba(244, 239, 230, 0.9);
+}
+
+[data-theme="dark"] .wcc-side__subItem {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: rgba(244, 239, 230, 0.78);
+}
+
+[data-theme="dark"] .wcc-side__subItem:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(155, 147, 224, 0.4);
+}
+
+.wcc-side.is-collapsed .wcc-side__item {
+  grid-template-columns: var(--side-icon-col);
+  padding: 0 var(--side-pad-right) 0 var(--side-pad-left);
+}
+
+.wcc-side.is-collapsed .wcc-side__label {
+  display: none;
+}
+
+.wcc-side.is-collapsed .wcc-side__chevron {
+  display: none;
+}
+
+.wcc-side.is-collapsed .wcc-side__sub {
+  display: none;
+}
+
+/* keep spacing identical in collapsed/expanded */
+
+.wcc-side.is-collapsed {
+  align-items: stretch;
+  --side-pad-left: 12px;
+  --side-pad-right: 12px;
+}
+
+
+/* Свернутое меню: три горизонтальные полоски, ближе друг к другу */
+.wcc-side__burger.is-collapsed {
+  flex-direction: column;
+  gap: 3px;
+}
+
+.wcc-side__burger.is-collapsed span:nth-child(1),
+.wcc-side__burger.is-collapsed span:nth-child(2),
+.wcc-side__burger.is-collapsed span:nth-child(3) {
+  width: 12px;
+  height: 2px;
+  border-radius: 2px;
+  transform: none;
+  opacity: 1;
+}
+
+/* Развернутое меню: иконка ".I." (точка — вертикальная черта — точка) */
+.wcc-side__burger.is-open {
+  flex-direction: row;
+  gap: 3px;
+}
+
+.wcc-side__burger.is-open span:nth-child(1),
+.wcc-side__burger.is-open span:nth-child(3) {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  transform: none;
+}
+
+.wcc-side__burger.is-open span:nth-child(2) {
+  width: 2px;
+  height: 12px;
+  border-radius: 1px;
+  opacity: 1;
+  transform: none;
+}
+
+@media (max-width: 900px) {
+  .wcc-side__menu {
+    gap: 3px;
+  }
+}
+
+
+
+

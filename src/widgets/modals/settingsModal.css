@@ -1,0 +1,20 @@
+.wcc-settingsModal__body {
+  min-width: 320px;
+  max-width: 420px;
+  width: min(92vw, 420px);
+}
+
+.wcc-settingsModal__title {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.wcc-settingsModal__content {
+  color: var(--c-muted);
+  margin-bottom: 12px;
+}
+
+.wcc-settingsModal__actions {
+  display: flex;
+  justify-content: flex-end;
+}

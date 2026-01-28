@@ -1,0 +1,24 @@
+.wcc-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  padding: 12px;
+}
+
+.wcc-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.wcc-modal__body {
+  position: relative;
+  z-index: 1;
+  min-width: 320px;
+  padding: 16px;
+  border-radius: 16px;
+  background: var(--c-surface);
+  box-shadow: var(--shadow-2);
+}

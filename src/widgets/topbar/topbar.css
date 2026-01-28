@@ -1,0 +1,806 @@
+﻿
+.wcc-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+
+  height: var(--topbar-h);
+  display: grid;
+  --tb-left-w: var(--side-w-collapsed, 56px);
+  grid-template-columns: var(--tb-left-w) minmax(220px, 380px) auto auto;
+  align-items: center;
+  gap: 8px;
+
+  padding: 0 var(--page-pad-x, 12px);
+  padding-right: 8px;
+  background: rgba(251, 249, 244, 0.9);
+  backdrop-filter: blur(10px);
+  border-bottom: none;
+  box-shadow: 0 8px 20px rgba(45, 38, 23, 0.08);
+  color: var(--c-ink);
+}
+
+[data-theme="dark"] .wcc-topbar {
+  background: rgba(74, 67, 60, 0.96);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.55);
+}
+
+[data-theme="dark"] .wcc-topbar__telephony .wcc-telephony {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+[data-theme="dark"] .wcc-search {
+  background: var(--c-surface-2);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 8px 18px rgba(0, 0, 0, 0.55);
+}
+
+[data-theme="dark"] .wcc-search__input {
+  color: var(--c-ink);
+}
+
+[data-theme="dark"] .wcc-shiftCombo {
+  background: var(--c-surface-2);
+}
+
+[data-theme="dark"] .wcc-shiftToggle {
+  background: rgba(155, 147, 224, 0.24);
+}
+
+[data-theme="dark"] .wcc-shiftToggle:hover {
+  background: rgba(155, 147, 224, 0.32);
+}
+
+[data-theme="dark"] .wcc-shiftPause {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--c-ink);
+}
+
+[data-theme="dark"] .wcc-themeToggle {
+  background: var(--c-surface-2);
+}
+
+[data-theme="dark"] .wcc-profile {
+  background: var(--c-surface-2);
+}
+
+[data-theme="dark"] .wcc-topbar svg {
+  color: var(--c-ink);
+}
+
+.wcc-topbar__left,
+.wcc-topbar__center,
+.wcc-topbar__telephony,
+.wcc-topbar__right {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.wcc-topbar__left { justify-content: flex-start; gap: 6px; }
+.wcc-topbar__center { justify-content: flex-start; gap: 8px; }
+.wcc-topbar__telephony { justify-content: flex-start; }
+.wcc-topbar__right { justify-content: flex-end; gap: 8px; flex-wrap: nowrap; }
+
+.wcc-topbar {
+  --tb-control-h: 36px;
+}
+
+.wcc-topbar__group {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  border-radius: var(--radius-ui, 16px);
+  height: var(--tb-control-h);
+}
+
+.wcc-topbar__telephony .wcc-telephony {
+  background: var(--c-surface-2);
+  border: none;
+  padding: 0 4px;
+  border-radius: var(--radius-ui, 16px);
+  box-shadow: var(--neu-inset);
+}
+
+.wcc-topbar__group--shift {
+  gap: 8px;
+}
+
+.wcc-topbar__group--meta {
+  gap: 8px;
+}
+
+.wcc-logout .wcc-icon-btn {
+  width: var(--tb-control-h);
+  height: var(--tb-control-h);
+  border-radius: var(--radius-ui, 16px);
+  border: none;
+  background: var(--c-surface);
+  box-shadow: var(--shadow-1);
+}
+
+.wcc-logout .wcc-icon-btn:hover {
+  box-shadow: var(--shadow-2);
+}
+
+.wcc-themeToggle {
+  width: var(--tb-control-h);
+  height: var(--tb-control-h);
+  border-radius: 999px;
+  border: none;
+  background: var(--c-surface);
+  color: var(--c-ink);
+  box-shadow: var(--shadow-1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: box-shadow 160ms ease, background 160ms ease;
+}
+
+.wcc-themeToggle:hover {
+  box-shadow: var(--shadow-2);
+}
+
+.wcc-themeToggle__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+
+.wcc-brand {
+  width: var(--side-w-collapsed, 56px);
+  height: 40px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  gap: 2px;
+}
+
+.wcc-brand__icon {
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+}
+
+.wcc-brand__img {
+  width: 26px;
+  height: 26px;
+  display: block;
+  object-fit: contain;
+}
+
+[data-theme="dark"] .wcc-brand__img {
+  filter: invert(1) brightness(1.2);
+}
+
+.wcc-brand__label {
+  font-size: 9px;
+  letter-spacing: 1.2px;
+  opacity: 0.70;
+}
+
+
+.wcc-search {
+  width: min(420px, 100%);
+  height: var(--tb-control-h);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  margin-right: 0;
+
+  border-radius: var(--radius-ui, 16px);
+  border: none;
+  background: var(--c-surface);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65), 0 6px 16px rgba(45, 38, 23, 0.08);
+}
+
+.wcc-search__icon { opacity: 0.65; }
+
+[data-theme="dark"] .wcc-search__icon {
+  opacity: 0.9;
+}
+
+.wcc-search__input {
+  border: none;
+  outline: none;
+  background: transparent;
+  width: 100%;
+  font-size: var(--fs-13);
+  color: var(--c-ink);
+}
+
+.wcc-search__input::placeholder {
+  color: var(--c-muted);
+  opacity: 0.85;
+}
+
+.wcc-search__clear {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  opacity: 0.55;
+}
+
+
+.wcc-telephony {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+
+  height: var(--tb-control-h);
+  padding: 0;
+
+  border-radius: var(--radius-ui, 16px);
+  border: none;
+  background: transparent;
+}
+
+.wcc-telephony__item {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+
+.wcc-telephony .wcc-icon-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-ui, 16px);
+  border: none;
+  background: var(--c-surface);
+  box-shadow: var(--neu-shadow-1);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wcc-telephony .wcc-icon-btn:hover {
+  box-shadow: var(--neu-shadow-2);
+}
+
+.wcc-telephony .wcc-icon-btn.is-active {
+  box-shadow: var(--neu-inset);
+}
+
+.wcc-telephony__img {
+  width: 18px;
+  height: 18px;
+  display: block;
+  opacity: 0.92;
+}
+
+[data-theme="dark"] .wcc-telephony__img {
+  filter: brightness(1.4) saturate(0) invert(1);
+  opacity: 0.95;
+}
+
+
+@keyframes wccPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(121, 115, 170, 0.26); }
+  70%  { box-shadow: 0 0 0 10px rgba(121, 115, 170, 0.00); }
+  100% { box-shadow: 0 0 0 0 rgba(121, 115, 170, 0.00); }
+}
+
+.wcc-telephony__item.is-calling .wcc-icon-btn {
+  background: rgba(121, 115, 170, 0.16);
+  animation: wccPulse 1.6s infinite;
+}
+
+
+.wcc-callBadge {
+  position: absolute;
+  left: 50%;
+  bottom: -9px;
+
+  height: 18px;
+  padding: 0 7px;
+  border-radius: 999px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.2px;
+
+  background: rgba(121, 115, 170, 0.92);
+  color: var(--c-white);
+
+  pointer-events: none;
+
+  opacity: 0;
+  transform: translateX(-50%) scale(0.98);
+  transform-origin: center;
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.wcc-callBadge.is-visible {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+}
+
+.wcc-callBadge.is-hidden {
+  opacity: 0;
+  transform: translateX(-50%) scale(0.98);
+}
+
+
+.wcc-shiftCombo {
+  height: var(--tb-control-h);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px;
+  border-radius: var(--radius-ui, 16px);
+  border: none;
+  background: var(--c-surface);
+  box-shadow: var(--shadow-1);
+}
+
+.wcc-shiftCombo.is-on {
+  background: var(--c-surface);
+  box-shadow: var(--shadow-1);
+}
+
+.wcc-shiftTimerInline {
+  min-width: 68px;
+  font-size: var(--fs-12);
+  font-variant-numeric: tabular-nums;
+  color: rgba(45, 38, 23, 0.92);
+  opacity: 0.85;
+}
+
+
+.wcc-shiftToggle {
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(123, 117, 184, 0.12);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 160ms ease, color 160ms ease;
+}
+
+.wcc-shiftToggle:hover {
+  background: rgba(123, 117, 184, 0.18);
+}
+
+.wcc-shiftToggle__label {
+  font-size: var(--fs-12);
+  opacity: 0.95;
+}
+
+.wcc-switch {
+  width: 36px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--c-surface-2);
+  position: relative;
+  box-shadow: inset 0 2px 5px rgba(45, 38, 23, 0.16);
+}
+
+.wcc-switch__thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.95);
+  transition: left 160ms ease;
+}
+
+.wcc-shiftToggle.is-on {
+  background: rgba(123, 117, 184, 0.18);
+}
+
+.wcc-shiftToggle.is-on .wcc-switch {
+  background: rgba(121, 115, 170, 0.55);
+}
+
+.wcc-shiftToggle.is-on .wcc-switch__thumb {
+  left: 20px;
+}
+
+.wcc-shiftPause {
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: none;
+  background: var(--c-surface-2);
+  color: rgba(45, 38, 23, 0.8);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 160ms ease, color 160ms ease, opacity 160ms ease;
+}
+
+.wcc-shiftPause[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.wcc-shiftPause:disabled {
+  opacity: 0.5;
+  cursor: default;
+  box-shadow: none;
+}
+
+.wcc-shiftPause:hover:not([aria-disabled="true"]) {
+  background: rgba(123, 117, 184, 0.16);
+}
+
+.wcc-shiftPause.is-on {
+  background: rgba(123, 117, 184, 0.18);
+  color: var(--c-ink);
+}
+
+.wcc-shiftPause__icon {
+  display: inline-flex;
+  gap: 3px;
+}
+
+.wcc-shiftPause__icon span {
+  display: block;
+  width: 3px;
+  height: 12px;
+  border-radius: 2px;
+  background: currentColor;
+}
+
+.wcc-shiftPause__label {
+  font-size: var(--fs-12);
+  opacity: 0.9;
+}
+
+.wcc-shiftPauseWrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.wcc-popover {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 190px;
+  max-width: 280px;
+  padding: 10px 12px 12px;
+  border-radius: 12px;
+  background: var(--c-surface);
+  box-shadow: var(--shadow-2);
+  z-index: 60;
+}
+
+.wcc-popover__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.wcc-popover__title {
+  font-size: var(--fs-12);
+  font-weight: 600;
+  margin-bottom: 0;
+  color: var(--c-ink);
+}
+
+.wcc-popover__value {
+  font-size: var(--fs-12);
+  color: var(--c-muted);
+}
+
+.wcc-popover--volume {
+  min-width: 200px;
+}
+
+.wcc-volume {
+  width: 100%;
+  appearance: none;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(123, 117, 184, 0.22);
+  outline: none;
+}
+
+.wcc-popover--dial {
+  min-width: 240px;
+  max-width: 260px;
+}
+
+.wcc-dialer__display {
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: var(--c-surface-2);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--fs-14);
+  margin-bottom: 8px;
+}
+
+.wcc-dialer__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.wcc-dialer__key {
+  height: 32px;
+  border-radius: 10px;
+  border: none;
+  background: var(--c-surface-2);
+  color: var(--c-ink);
+  cursor: pointer;
+  box-shadow: var(--shadow-1);
+}
+
+.wcc-dialer__actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  gap: 8px;
+}
+
+.wcc-dialer__btn {
+  flex: 1;
+  height: 28px;
+  border-radius: 999px;
+  border: none;
+  background: var(--c-surface-2);
+  color: var(--c-ink);
+  cursor: pointer;
+}
+
+.wcc-popover--pause {
+  min-width: 220px;
+  left: auto;
+  right: 0;
+  transform: none;
+}
+
+.wcc-pause__list {
+  display: grid;
+  gap: 6px;
+}
+
+.wcc-pause__item {
+  border: none;
+  border-radius: 10px;
+  background: var(--c-surface-2);
+  color: var(--c-ink);
+  padding: 6px 8px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.wcc-pause__item.is-active {
+  background: rgba(123, 117, 184, 0.2);
+}
+
+.wcc-pause__input {
+  margin-top: 8px;
+  width: 100%;
+  border: none;
+  border-radius: 10px;
+  padding: 8px;
+  background: var(--c-surface-2);
+  color: var(--c-ink);
+}
+
+.wcc-pause__actions {
+  margin-top: 8px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.wcc-pause__ok {
+  height: 28px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(123, 117, 184, 0.2);
+  color: var(--c-ink);
+  cursor: pointer;
+}
+.wcc-volume::-webkit-slider-thumb {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: var(--c-ink);
+  box-shadow: 0 2px 6px rgba(45, 38, 23, 0.25);
+}
+
+.wcc-volume::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: var(--c-ink);
+  border: none;
+  box-shadow: 0 2px 6px rgba(45, 38, 23, 0.25);
+}
+
+.wcc-volume::-moz-range-track {
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(123, 117, 184, 0.22);
+}
+
+.wcc-pill {
+  height: var(--tb-control-h);
+  padding: 0 12px;
+  border-radius: var(--radius-ui, 16px);
+
+  border: none;
+  background: var(--c-surface);
+  box-shadow: var(--shadow-1);
+
+  color: var(--c-ink);
+  font-size: var(--fs-12);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+}
+
+.wcc-pill:hover {
+  box-shadow: var(--shadow-2);
+}
+
+.wcc-pill--primary {
+  background: rgba(123, 117, 184, 0.16);
+  box-shadow: var(--shadow-1);
+}
+
+
+.wcc-notify {
+  position: relative;
+  display: inline-flex;
+}
+
+.wcc-topbar__right .wcc-notify .wcc-icon-btn {
+  width: var(--tb-control-h);
+  height: var(--tb-control-h);
+  border-radius: var(--radius-ui, 16px);
+
+  border: none;
+  background: var(--c-surface);
+  box-shadow: var(--shadow-1);
+}
+
+.wcc-topbar__right .wcc-notify .wcc-icon-btn:hover {
+  box-shadow: var(--shadow-2);
+}
+
+.wcc-badge {
+  position: absolute;
+  right: -4px;
+  top: -4px;
+
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+
+  border-radius: 999px;
+  background: rgba(123, 117, 184, 0.92);
+  color: var(--c-white);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 11px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+
+  border: 0; 
+}
+
+
+.wcc-profile {
+  height: var(--tb-control-h);
+  padding: 0 10px 0 6px;
+  border-radius: var(--radius-ui, 16px);
+
+  border: none;
+  background: var(--c-surface);
+  box-shadow: var(--shadow-1);
+
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wcc-profile:hover {
+  box-shadow: var(--shadow-2);
+}
+
+.wcc-profile__avatar {
+  width: 30px;
+  height: 30px;
+  margin-left: -4px;
+  border-radius: 999px;
+  background: rgba(209, 125, 82, 0.18);
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  color: var(--c-ink);
+}
+
+.wcc-profile__name {
+  font-size: var(--fs-12);
+  opacity: 0.9;
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wcc-profileWrap {
+  position: relative;
+}
+
+.wcc-profileMenu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 160px;
+  background: var(--c-surface);
+  border-radius: 12px;
+  box-shadow: var(--shadow-2);
+  padding: 6px;
+  z-index: 60;
+}
+
+.wcc-profileMenu__item {
+  width: 100%;
+  border: none;
+  background: transparent;
+  text-align: left;
+  padding: 8px 10px;
+  border-radius: 8px;
+  color: var(--c-ink);
+  cursor: pointer;
+}
+
+.wcc-profileMenu__item:hover {
+  background: var(--c-surface-2);
+}
+
+
+@supports not (backdrop-filter: blur(10px)) {
+  .wcc-topbar {
+    backdrop-filter: none;
+    background: var(--c-surface);
+  }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  .wcc-telephony__item.is-calling .wcc-icon-btn {
+    animation: none;
+  }
+  .wcc-callBadge {
+    transition: none;
+  }
+}
+
+[data-theme="dark"] .wcc-search__input::placeholder {
+  color: rgba(255, 250, 246, 0.7);
+}
+
+
+
+

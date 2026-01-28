@@ -1,0 +1,49 @@
+.wcc-icon-btn {
+  height: 40px;
+  width: 40px;
+  border-radius: var(--radius-ui, 16px);
+  border: none;
+  background: var(--c-surface);
+  box-shadow: var(--shadow-1);
+  color: var(--c-ink);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 140ms ease, background 140ms ease;
+}
+
+.wcc-icon-btn:hover {
+  box-shadow: var(--shadow-2);
+}
+
+.wcc-icon-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--c-focus);
+}
+
+.wcc-icon-btn:active {
+  transform: scale(0.98);
+  box-shadow: inset 0 2px 6px rgba(45, 38, 23, 0.16);
+}
+
+.wcc-icon-btn.is-active {
+  background: rgba(123, 117, 184, 0.14);
+  box-shadow: inset 0 2px 6px rgba(123, 117, 184, 0.24);
+}
+
+.wcc-icon-btn.is-danger {
+  background: rgba(179, 3, 63, 0.10);
+  box-shadow: inset 0 2px 6px rgba(179, 3, 63, 0.22);
+  color: var(--c-danger);
+}
+
+[data-theme="dark"] .wcc-icon-btn {
+  background: var(--c-surface-2);
+  color: var(--c-ink);
+  box-shadow: var(--shadow-1);
+}
+
+[data-theme="dark"] .wcc-icon-btn:hover {
+  box-shadow: var(--shadow-2);
+}
