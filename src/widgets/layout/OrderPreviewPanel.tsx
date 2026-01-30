@@ -1,5 +1,5 @@
 ﻿import React from "react";
-import type { OrderItem } from "../modals/OrderModal";
+import type { OrderItem } from "../../data/order";
 import "./appShell.css";
 
 type Props = {

@@ -1,15 +1,21 @@
-﻿
-import React from "react";
+﻿import React from "react";
 import "./modalBase.css";
 import "./orderModal.css";
 
-export type OrderItem = {
-  id: string;
-  title: string;
-  meta?: string;
-  price: number;
-  quantity: number;
-};
+import type { OrderItem } from "../../data/order";
+import {
+  carriers,
+  payments,
+  pvzList,
+  pvzCarriers,
+  deliveryPrices,
+} from "../../data/order";
+import { OrderSummaryCard } from "./orderSteps/OrderSummaryCard";
+import { OrderStepItems } from "./orderSteps/OrderStepItems";
+import { OrderStepDelivery } from "./orderSteps/OrderStepDelivery";
+import { OrderStepPayment } from "./orderSteps/OrderStepPayment";
+
+export type { OrderItem };
 
 type OrderModalProps = {
   open: boolean;
@@ -18,103 +24,106 @@ type OrderModalProps = {
   onClose: () => void;
 };
 
-const deliveryPrices: Record<string, number> = {
-  logsis: 200,
-  integral: 150,
-  cdek: 350,
-  dalli: 250,
-  uvi: 300,
-  "yandex-express": 500,
+type OrderFormState = {
+  activeStep: 1 | 2 | 3;
+  source: string;
+  sourceError: boolean;
+  addressError: boolean;
+  orderComment: string;
+  fullName: string;
+  phone: string;
+  country: string;
+  region: string;
+  postalCode: string;
+  city: string;
+  street: string;
+  house: string;
+  apartment: string;
+  carrier: string;
+  deliveryDate: string;
+  deliveryTime: string;
+  deliveryDeferral: number;
+  carrierComment: string;
+  payment: string;
+  finalMessage: boolean;
+  pvzOpen: boolean;
+  pvzTab: "addresses" | "map";
+  pvzSearch: string;
+  selectedPvz: string | null;
 };
 
-const pvzCarriers = ["cdek", "integral", "dalli"];
+type Action =
+  | { type: "SET_VALUE"; key: keyof OrderFormState; value: OrderFormState[keyof OrderFormState] }
+  | { type: "RESET_ON_OPEN" };
 
+const initialState: OrderFormState = {
+  activeStep: 1,
+  source: "",
+  sourceError: false,
+  addressError: false,
+  orderComment: "",
+  fullName: "",
+  phone: "",
+  country: "",
+  region: "",
+  postalCode: "",
+  city: "",
+  street: "",
+  house: "",
+  apartment: "",
+  carrier: "logsis",
+  deliveryDate: "",
+  deliveryTime: "",
+  deliveryDeferral: 0,
+  carrierComment: "",
+  payment: "sbp",
+  finalMessage: false,
+  pvzOpen: false,
+  pvzTab: "addresses",
+  pvzSearch: "",
+  selectedPvz: null,
+};
 
-const carriers = [
-  { value: "logsis", label: "Логсис" },
-  { value: "integral", label: "Интеграл" },
-  { value: "cdek", label: "СДЭК" },
-  { value: "dalli", label: "Далли" },
-  { value: "uvi", label: "Доставка ЮВИ" },
-  { value: "yandex-express", label: "Яндекс.Экспресс" },
-];
-
-const payments = [
-  { value: "sbp", label: "СБП" },
-  { value: "prepay", label: "Предоплата" },
-  { value: "prepay-requisites", label: "Предоплата по реквизитам" },
-  { value: "postpay", label: "Постоплата" },
-  { value: "yandex-split", label: "Яндекс Сплит" },
-  { value: "tinkoff-parts", label: "Тинькофф Долями" },
-];
-
-const pvzList = [
-  {
-    id: "pvz-1",
-    name: "ПВЗ №1 - Центр города",
-    address: "ул. Главная, дом 1",
-    time: "Пн-Пт: 09:00-20:00, Сб-Вс: 10:00-18:00",
-  },
-  {
-    id: "pvz-2",
-    name: "ПВЗ №2 - Восток",
-    address: "пр. Восточный, дом 50",
-    time: "Пн-Пт: 10:00-21:00, Сб-Вс: 11:00-19:00",
-  },
-  {
-    id: "pvz-3",
-    name: "ПВЗ №3 - Запад",
-    address: "ул. Западная, дом 100",
-    time: "Пн-Вс: 08:00-22:00",
-  },
-];
+function reducer(state: OrderFormState, action: Action): OrderFormState {
+  switch (action.type) {
+    case "SET_VALUE":
+      return { ...state, [action.key]: action.value };
+    case "RESET_ON_OPEN":
+      return {
+        ...state,
+        activeStep: 1,
+        sourceError: false,
+        addressError: false,
+        finalMessage: false,
+        pvzOpen: false,
+      };
+    default:
+      return state;
+  }
+}
 
 function formatCurrency(value: number) {
   return value.toLocaleString("ru-RU") + " ₽";
 }
 
 export function OrderModal({ open, items, onItemsChange, onClose }: OrderModalProps) {
-  const [activeStep, setActiveStep] = React.useState<1 | 2 | 3>(1);
-  const [source, setSource] = React.useState("");
-  const [sourceError, setSourceError] = React.useState(false);
-  const [addressError, setAddressError] = React.useState(false);
-  const [orderComment, setOrderComment] = React.useState("");
-
-  const [fullName, setFullName] = React.useState("");
-  const [phone, setPhone] = React.useState("");
-  const [country, setCountry] = React.useState("");
-  const [region, setRegion] = React.useState("");
-  const [postalCode, setPostalCode] = React.useState("");
-  const [city, setCity] = React.useState("");
-  const [street, setStreet] = React.useState("");
-  const [house, setHouse] = React.useState("");
-  const [apartment, setApartment] = React.useState("");
-  const [carrier, setCarrier] = React.useState("logsis");
-  const [deliveryDate, setDeliveryDate] = React.useState("");
-  const [deliveryTime, setDeliveryTime] = React.useState("");
-  const [deliveryDeferral, setDeliveryDeferral] = React.useState(0);
-  const [carrierComment, setCarrierComment] = React.useState("");
-
-  const [payment, setPayment] = React.useState("sbp");
-  const [finalMessage, setFinalMessage] = React.useState(false);
-
-  const [pvzOpen, setPvzOpen] = React.useState(false);
-  const [pvzTab, setPvzTab] = React.useState<"addresses" | "map">("addresses");
-  const [pvzSearch, setPvzSearch] = React.useState("");
-  const [selectedPvz, setSelectedPvz] = React.useState<string | null>(null);
-
+  const [state, dispatch] = React.useReducer(reducer, initialState);
   const [dragOffset, setDragOffset] = React.useState({ x: 0, y: 0 });
   const dragRef = React.useRef({ dragging: false, startX: 0, startY: 0, baseX: 0, baseY: 0 });
   const modalBodyRef = React.useRef<HTMLDivElement | null>(null);
   const pvzBodyRef = React.useRef<HTMLDivElement | null>(null);
   const titleId = "wcc-order-modal-title";
 
+  const setValue = <K extends keyof OrderFormState>(key: K, value: OrderFormState[K]) => {
+    dispatch({ type: "SET_VALUE", key, value });
+  };
+
   const itemsAmount = React.useMemo(
     () => items.reduce((sum, item) => sum + item.price * (item.quantity || 1), 0),
     [items]
   );
 
-  const deliveryPrice = deliveryPrices[carrier] ?? 0;
+  const deliveryPrice = deliveryPrices[state.carrier] ?? 0;
   const totalWithoutDelivery = Math.max(0, itemsAmount);
   const totalWithDelivery = totalWithoutDelivery + deliveryPrice;
 
@@ -123,25 +132,49 @@ export function OrderModal({ open, items, onItemsChange, onClose }: OrderModalPr
     [items]
   );
 
+  const isAddressEmpty = React.useMemo(() => {
+    return (
+      !state.fullName.trim() &&
+      !state.phone.trim() &&
+      !state.postalCode.trim() &&
+      !state.country.trim() &&
+      !state.region.trim() &&
+      !state.city.trim() &&
+      !state.street.trim() &&
+      !state.house.trim() &&
+      !state.apartment.trim()
+    );
+  }, [
+    state.fullName,
+    state.phone,
+    state.postalCode,
+    state.country,
+    state.region,
+    state.city,
+    state.street,
+    state.house,
+    state.apartment,
+  ]);
+
   const visibleCarriers = React.useMemo(() => {
-    if (!city.trim()) return [];
-    return carriers.filter((c) => c.value !== "yandex-express" || city.trim().toLowerCase() === "москва");
-  }, [city]);
+    if (!state.city.trim()) return [];
+    return carriers.filter(
+      (c) => c.value !== "yandex-express" || state.city.trim().toLowerCase() === "москва"
+    );
+  }, [state.city]);
 
   const visiblePayments = React.useMemo(() => {
-    if (carrier === "yandex-express") {
+    if (state.carrier === "yandex-express") {
       const allowed = new Set(["sbp", "prepay", "prepay-requisites"]);
       return payments.filter((p) => allowed.has(p.value));
     }
     return payments;
-  }, [carrier]);
+  }, [state.carrier]);
+
   React.useEffect(() => {
     if (!open) return;
     setDragOffset({ x: 0, y: 0 });
-    setActiveStep(1);
-    setFinalMessage(false);
-    setSourceError(false);
-    setAddressError(false);
+    dispatch({ type: "RESET_ON_OPEN" });
   }, [open]);
 
   React.useEffect(() => {
@@ -211,7 +244,7 @@ export function OrderModal({ open, items, onItemsChange, onClose }: OrderModalPr
   }, [open, onClose]);
 
   React.useEffect(() => {
-    if (!pvzOpen) return;
+    if (!state.pvzOpen) return;
     const node = pvzBodyRef.current;
     if (!node) return;
 
@@ -230,7 +263,7 @@ export function OrderModal({ open, items, onItemsChange, onClose }: OrderModalPr
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        setPvzOpen(false);
+        setValue("pvzOpen", false);
         return;
       }
       if (event.key !== "Tab") return;
@@ -255,48 +288,28 @@ export function OrderModal({ open, items, onItemsChange, onClose }: OrderModalPr
     focusFirst();
     node.addEventListener("keydown", handleKeyDown);
     return () => node.removeEventListener("keydown", handleKeyDown);
-  }, [pvzOpen]);
+  }, [state.pvzOpen]);
+
+  React.useEffect(() => {
+    if (state.source) setValue("sourceError", false);
+  }, [state.source]);
+
+  React.useEffect(() => {
+    if (!isAddressEmpty) setValue("addressError", false);
+  }, [isAddressEmpty]);
 
   React.useEffect(() => {
     if (!visibleCarriers.length) return;
-    if (!visibleCarriers.find((c) => c.value === carrier)) {
-      setCarrier(visibleCarriers[0].value);
+    if (!visibleCarriers.find((c) => c.value === state.carrier)) {
+      setValue("carrier", visibleCarriers[0].value);
     }
-  }, [visibleCarriers, carrier]);
+  }, [visibleCarriers, state.carrier]);
 
   React.useEffect(() => {
-    if (!visiblePayments.find((p) => p.value === payment)) {
-      setPayment(visiblePayments[0]?.value ?? "sbp");
+    if (!visiblePayments.find((p) => p.value === state.payment)) {
+      setValue("payment", visiblePayments[0]?.value ?? "sbp");
     }
-  }, [visiblePayments, payment]);
-
-  React.useEffect(() => {
-    if (source) setSourceError(false);
-  }, [source]);
-
-  React.useEffect(() => {
-    const empty =
-      !fullName.trim() &&
-      !phone.trim() &&
-      !postalCode.trim() &&
-      !country.trim() &&
-      !region.trim() &&
-      !city.trim() &&
-      !street.trim() &&
-      !house.trim() &&
-      !apartment.trim();
-    if (!empty) setAddressError(false);
-  }, [
-    fullName,
-    phone,
-    postalCode,
-    country,
-    region,
-    city,
-    street,
-    house,
-    apartment,
-  ]);
+  }, [visiblePayments, state.payment]);
 
   const handleDragStart = (event: React.MouseEvent) => {
     dragRef.current.dragging = true;
@@ -314,36 +327,24 @@ export function OrderModal({ open, items, onItemsChange, onClose }: OrderModalPr
     onItemsChange(items.filter((item) => item.id !== id));
   };
 
-
-  const isAddressEmpty =
-    !fullName.trim() &&
-    !phone.trim() &&
-    !postalCode.trim() &&
-    !country.trim() &&
-    !region.trim() &&
-    !city.trim() &&
-    !street.trim() &&
-    !house.trim() &&
-    !apartment.trim();
-
   const setStepSafe = (step: 1 | 2 | 3) => {
     if (step === 2 || step === 3) {
-      if (!source) {
-        setSourceError(true);
-        setActiveStep(1);
+      if (!state.source) {
+        setValue("sourceError", true);
+        setValue("activeStep", 1);
         return;
       }
     }
     if (step === 3 && isAddressEmpty) {
-      setAddressError(true);
-      setActiveStep(2);
+      setValue("addressError", true);
+      setValue("activeStep", 2);
       return;
     }
-    setActiveStep(step);
+    setValue("activeStep", step);
   };
 
   const filteredPvz = pvzList.filter((item) => {
-    const q = pvzSearch.trim().toLowerCase();
+    const q = state.pvzSearch.trim().toLowerCase();
     if (!q) return true;
     return item.name.toLowerCase().includes(q) || item.address.toLowerCase().includes(q);
   });
@@ -351,35 +352,17 @@ export function OrderModal({ open, items, onItemsChange, onClose }: OrderModalPr
   if (!open) return null;
 
   const summaryCard = (
-    <div className="wcc-orderModal__card wcc-orderModal__card--summary">
-      <div className="wcc-orderModal__sectionTitle">Итого</div>
-      <div className="wcc-orderModal__summary">
-        <div className="wcc-orderModal__summaryRow">
-          <span>Состав заказа</span>
-          <span>{totalItems === 0 ? "нет позиций" : `${totalItems} товаров`}</span>
-        </div>
-        <div className="wcc-orderModal__summaryRow">
-          <span>Сумма товаров</span>
-          <span>{formatCurrency(itemsAmount)}</span>
-        </div>
-        <div className="wcc-orderModal__summaryRow">
-          <span>Доставка</span>
-          <span>{formatCurrency(deliveryPrice)}</span>
-        </div>
-        <div className="wcc-orderModal__summaryRow wcc-orderModal__summaryRow--total">
-          <span>Итого к оплате</span>
-          <span>{formatCurrency(totalWithDelivery)}</span>
-        </div>
-      </div>
-    </div>
+    <OrderSummaryCard
+      totalItems={totalItems}
+      itemsAmount={itemsAmount}
+      deliveryPrice={deliveryPrice}
+      totalWithDelivery={totalWithDelivery}
+      formatCurrency={formatCurrency}
+    />
   );
+
   return (
-    <div
-      className="wcc-modal wcc-orderModal"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby={titleId}
-    >
+    <div className="wcc-modal wcc-orderModal" role="dialog" aria-modal="true" aria-labelledby={titleId}>
       <div className="wcc-modal__backdrop" />
       <div
         className="wcc-modal__body wcc-orderModal__body"
@@ -391,7 +374,9 @@ export function OrderModal({ open, items, onItemsChange, onClose }: OrderModalPr
       >
         <div className="wcc-orderModal__head" onMouseDown={handleDragStart}>
           <div>
-            <div className="wcc-orderModal__title" id={titleId}>Оформление заказа</div>
+            <div className="wcc-orderModal__title" id={titleId}>
+              Оформление заказа
+            </div>
             <div className="wcc-orderModal__subtitle">Черновик интерфейса — наполним позже.</div>
           </div>
           <button className="wcc-orderModal__close" type="button" onClick={onClose} aria-label="Закрыть">
@@ -403,7 +388,7 @@ export function OrderModal({ open, items, onItemsChange, onClose }: OrderModalPr
           {[1, 2, 3].map((step) => (
             <button
               key={step}
-              className={`wcc-stepIndicator ${activeStep === step ? "wcc-stepIndicator--active" : ""}`}
+              className={`wcc-stepIndicator ${state.activeStep === step ? "wcc-stepIndicator--active" : ""}`}
               type="button"
               onClick={() => setStepSafe(step as 1 | 2 | 3)}
             >
@@ -415,311 +400,105 @@ export function OrderModal({ open, items, onItemsChange, onClose }: OrderModalPr
           ))}
         </div>
 
-        {activeStep === 1 && (
+        {state.activeStep === 1 && (
           <div className="wcc-orderModal__content">
-            <div className="wcc-orderModal__card">
-              <div className="wcc-orderModal__section">
-                <div className="wcc-orderModal__sectionTitle">Корзина</div>
-                <div className="wcc-orderModal__list">
-                  {items.map((item) => (
-                    <div key={item.id} className="wcc-orderItem">
-                      <div>
-                        <div className="wcc-orderItem__title">{item.title}</div>
-                        <div className="wcc-orderItem__meta">{item.meta}</div>
-                      </div>
-                      <div className="wcc-orderItem__qty">
-                        <button
-                          type="button"
-                          className="wcc-orderItem__qtyBtn"
-                          onClick={() =>
-                            updateItem(item.id, (it) => ({
-                              ...it,
-                              quantity: Math.max(1, (it.quantity || 1) - 1),
-                            }))
-                          }
-                        >
-                          −
-                        </button>
-                        <span>{item.quantity || 1}</span>
-                        <button
-                          type="button"
-                          className="wcc-orderItem__qtyBtn"
-                          onClick={() =>
-                            updateItem(item.id, (it) => ({
-                              ...it,
-                              quantity: (it.quantity || 1) + 1,
-                            }))
-                          }
-                        >
-                          +
-                        </button>
-                      </div>
-                      <div className="wcc-orderItem__price">{formatCurrency(item.price * (item.quantity || 1))}</div>
-                      <button className="wcc-orderItem__remove" type="button" onClick={() => removeItem(item.id)}>
-                        Убрать
-                      </button>
-                    </div>
-                  ))}
-                </div>
-                <div className="wcc-orderSummary">
-                  <div className="wcc-orderSummary__row">
-                    <span>Товары</span>
-                    <span>{formatCurrency(itemsAmount)}</span>
-                  </div>
-                  <div className="wcc-orderSummary__row wcc-orderSummary__row--total">
-                    <span>Сумма заказа</span>
-                    <span>{formatCurrency(totalWithoutDelivery)}</span>
-                  </div>
-                </div>
-              </div>
-
-
-              <div className="wcc-orderModal__section">
-                <div className="wcc-orderModal__sectionTitle">Источник</div>
-                <select className="wcc-input" value={source} onChange={(e) => setSource(e.target.value)}>
-                  <option value="">Выберите источник</option>
-                  <option value="one">Источник один</option>
-                  <option value="two">Источник два</option>
-                  <option value="three">Источник три</option>
-                </select>
-                {sourceError && <div className="wcc-error">Пожалуйста, выберите источник перед переходом к следующему этапу.</div>}
-              </div>
-
-              <div className="wcc-orderModal__section">
-                <textarea
-                  className="wcc-input wcc-input--textarea"
-                  rows={3}
-                  placeholder="Комментарий к заказу"
-                  value={orderComment}
-                  onChange={(e) => setOrderComment(e.target.value)}
-                />
-              </div>
-
-              <div className="wcc-orderModal__actions wcc-orderModal__actions--between">
-                <div />
-                <button className="wcc-arrowBtn" type="button" onClick={() => setStepSafe(2)}>
-                  →
-                </button>
-              </div>
-            </div>
-            {summaryCard}
-          </div>
-        )}
-        {activeStep === 2 && (
-          <div className="wcc-orderModal__content">
-            <div className="wcc-orderModal__card">
-              <div className="wcc-orderModal__section">
-                <div className="wcc-grid wcc-grid--2">
-                  <div className="wcc-field">
-                    <label>ФИО получателя</label>
-                    <input className="wcc-input" value={fullName} onChange={(e) => setFullName(e.target.value)} />
-                  </div>
-                  <div className="wcc-field">
-                    <label>Телефон</label>
-                    <input className="wcc-input" value={phone} onChange={(e) => setPhone(e.target.value)} />
-                  </div>
-                </div>
-              </div>
-
-              <div className="wcc-orderModal__section">
-                <div className="wcc-grid wcc-grid--3">
-                  <div className="wcc-field">
-                    <label>Страна</label>
-                    <input className="wcc-input" value={country} onChange={(e) => setCountry(e.target.value)} />
-                  </div>
-                  <div className="wcc-field">
-                    <label>Регион</label>
-                    <input className="wcc-input" value={region} onChange={(e) => setRegion(e.target.value)} />
-                  </div>
-                  <div className="wcc-field">
-                    <label>Индекс</label>
-                    <input className="wcc-input" value={postalCode} onChange={(e) => setPostalCode(e.target.value)} />
-                  </div>
-                </div>
-                <div className="wcc-field">
-                  <label>Город</label>
-                  <input className="wcc-input" value={city} onChange={(e) => setCity(e.target.value)} />
-                </div>
-                <div className="wcc-field">
-                  <label>Улица</label>
-                  <input className="wcc-input" value={street} onChange={(e) => setStreet(e.target.value)} />
-                </div>
-                <div className="wcc-grid wcc-grid--2">
-                  <div className="wcc-field">
-                    <label>Дом / корпус</label>
-                    <input className="wcc-input" value={house} onChange={(e) => setHouse(e.target.value)} />
-                  </div>
-                  <div className="wcc-field">
-                    <label>Квартира</label>
-                    <input className="wcc-input" value={apartment} onChange={(e) => setApartment(e.target.value)} />
-                  </div>
-                </div>
-                {addressError && (
-                  <div className="wcc-error">
-                    Пожалуйста, заполните данные адреса и доставки перед переходом к оплате.
-                  </div>
-                )}
-              </div>
-
-              <div className="wcc-orderModal__section">
-                <div className="wcc-orderModal__sectionTitle">Перевозчик</div>
-                <div className="wcc-options">
-                  {visibleCarriers.map((option) => (
-                    <label key={option.value} className="wcc-option">
-                      <input
-                        type="radio"
-                        name="carrier"
-                        checked={carrier === option.value}
-                        onChange={() => setCarrier(option.value)}
-                      />
-                      <span>{option.label}</span>
-                    </label>
-                  ))}
-                </div>
-
-                {pvzCarriers.includes(carrier) && (
-                  <button className="wcc-secondaryBtn" type="button" onClick={() => setPvzOpen(true)}>
-                    Выбрать точку доставки (ПВЗ)
-                  </button>
-                )}
-
-                {city.trim() && (
-                  <div className="wcc-grid wcc-grid--2 wcc-grid--gap-sm">
-                    <input
-                      className="wcc-input"
-                      type="date"
-                      value={deliveryDate}
-                      onChange={(e) => setDeliveryDate(e.target.value)}
-                    />
-                    <select
-                      className="wcc-input"
-                      value={deliveryTime}
-                      onChange={(e) => setDeliveryTime(e.target.value)}
-                    >
-                      <option value="">Выберите время</option>
-                      <option value="09:00-12:00">09:00 - 12:00</option>
-                      <option value="12:00-15:00">12:00 - 15:00</option>
-                      <option value="15:00-18:00">15:00 - 18:00</option>
-                      <option value="18:00-21:00">18:00 - 21:00</option>
-                    </select>
-                  </div>
-                )}
-
-                {city.trim() && (
-                  <div className="wcc-field wcc-field--inline">
-                    <label>Отсрочка сбора (дни)</label>
-                    <input
-                      className="wcc-input wcc-input--small"
-                      type="number"
-                      value={deliveryDeferral}
-                      min={0}
-                      max={30}
-                      onChange={(e) => setDeliveryDeferral(Number(e.target.value))}
-                    />
-                  </div>
-                )}
-              </div>
-
-              <div className="wcc-orderModal__section">
-                <textarea
-                  className="wcc-input wcc-input--textarea"
-                  rows={3}
-                  placeholder="Комментарий для перевозчика"
-                  value={carrierComment}
-                  onChange={(e) => setCarrierComment(e.target.value)}
-                />
-              </div>
-
-              <div className="wcc-orderModal__actions wcc-orderModal__actions--between">
-                <button className="wcc-arrowBtn" type="button" onClick={() => setStepSafe(1)}>
-                  ←
-                </button>
-                <button className="wcc-arrowBtn" type="button" onClick={() => setStepSafe(3)}>
-                  →
-                </button>
-              </div>
-            </div>
+            <OrderStepItems
+              items={items}
+              itemsAmount={itemsAmount}
+              totalWithoutDelivery={totalWithoutDelivery}
+              source={state.source}
+              sourceError={state.sourceError}
+              orderComment={state.orderComment}
+              onUpdateItem={updateItem}
+              onRemoveItem={removeItem}
+              onSourceChange={(value) => setValue("source", value)}
+              onOrderCommentChange={(value) => setValue("orderComment", value)}
+              onNext={() => setStepSafe(2)}
+              formatCurrency={formatCurrency}
+            />
             {summaryCard}
           </div>
         )}
 
-        {activeStep === 3 && (
+        {state.activeStep === 2 && (
           <div className="wcc-orderModal__content">
-            <div className="wcc-orderModal__card">
-              <div className="wcc-orderModal__section">
-                <div className="wcc-orderModal__sectionTitle">Способ оплаты</div>
-                <div className="wcc-options">
-                  {visiblePayments.map((option) => (
-                    <label key={option.value} className="wcc-option">
-                      <input
-                        type="radio"
-                        name="payment"
-                        checked={payment === option.value}
-                        onChange={() => setPayment(option.value)}
-                      />
-                      <span>{option.label}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-            </div>
+            <OrderStepDelivery
+              fullName={state.fullName}
+              phone={state.phone}
+              country={state.country}
+              region={state.region}
+              postalCode={state.postalCode}
+              city={state.city}
+              street={state.street}
+              house={state.house}
+              apartment={state.apartment}
+              carrier={state.carrier}
+              deliveryDate={state.deliveryDate}
+              deliveryTime={state.deliveryTime}
+              deliveryDeferral={state.deliveryDeferral}
+              carrierComment={state.carrierComment}
+              addressError={state.addressError}
+              visibleCarriers={visibleCarriers}
+              pvzEnabled={pvzCarriers.includes(state.carrier as (typeof pvzCarriers)[number])}
+              onOpenPvz={() => setValue("pvzOpen", true)}
+              onChange={(key, value) => setValue(key as keyof OrderFormState, value)}
+              onChangeNumber={(key, value) => setValue(key as keyof OrderFormState, value)}
+              onCarrierChange={(value) => setValue("carrier", value)}
+              onBack={() => setStepSafe(1)}
+              onNext={() => setStepSafe(3)}
+            />
             {summaryCard}
+          </div>
+        )}
 
-            <div className="wcc-orderModal__actions wcc-orderModal__actions--between">
-              <button className="wcc-arrowBtn" type="button" onClick={() => setStepSafe(2)}>
-                ←
-              </button>
-              <button
-                className="wcc-action-btn wcc-action-btn--primary"
-                type="button"
-                onClick={() => setFinalMessage(true)}
-              >
-                Подтвердить заказ
-              </button>
-            </div>
-
-            {finalMessage && (
-              <div className="wcc-orderModal__message">
-                Заказ успешно оформлен (демо)! Данные никуда не отправляются, это только наглядный пример интерфейса.
-              </div>
-            )}
+        {state.activeStep === 3 && (
+          <div className="wcc-orderModal__content">
+            <OrderStepPayment
+              payment={state.payment}
+              visiblePayments={visiblePayments}
+              finalMessage={state.finalMessage}
+              onPaymentChange={(value) => setValue("payment", value)}
+              onBack={() => setStepSafe(2)}
+              onConfirm={() => setValue("finalMessage", true)}
+            />
+            {summaryCard}
           </div>
         )}
       </div>
 
-      {pvzOpen && (
+      {state.pvzOpen && (
         <div className="wcc-modal wcc-orderSubModal" role="dialog" aria-modal="true" aria-label="Выбор ПВЗ">
-          <div className="wcc-modal__backdrop" onClick={() => setPvzOpen(false)} />
+          <div className="wcc-modal__backdrop" onClick={() => setValue("pvzOpen", false)} />
           <div className="wcc-modal__body wcc-orderSubModal__body" ref={pvzBodyRef} tabIndex={-1}>
             <div className="wcc-orderSubModal__head">
               <div>Выбор точки доставки</div>
-              <button className="wcc-orderModal__close" type="button" onClick={() => setPvzOpen(false)}>
+              <button className="wcc-orderModal__close" type="button" onClick={() => setValue("pvzOpen", false)}>
                 ×
               </button>
             </div>
             <div className="wcc-subTabs">
               <button
-                className={`wcc-subTab ${pvzTab === "addresses" ? "is-active" : ""}`}
+                className={`wcc-subTab ${state.pvzTab === "addresses" ? "is-active" : ""}`}
                 type="button"
-                onClick={() => setPvzTab("addresses")}
+                onClick={() => setValue("pvzTab", "addresses")}
               >
                 Список адресов
               </button>
               <button
-                className={`wcc-subTab ${pvzTab === "map" ? "is-active" : ""}`}
+                className={`wcc-subTab ${state.pvzTab === "map" ? "is-active" : ""}`}
                 type="button"
-                onClick={() => setPvzTab("map")}
+                onClick={() => setValue("pvzTab", "map")}
               >
                 Карта
               </button>
             </div>
-            {pvzTab === "addresses" && (
+            {state.pvzTab === "addresses" && (
               <>
                 <input
                   className="wcc-input"
                   placeholder="Поиск по адресу..."
-                  value={pvzSearch}
-                  onChange={(e) => setPvzSearch(e.target.value)}
+                  value={state.pvzSearch}
+                  onChange={(e) => setValue("pvzSearch", e.target.value)}
                 />
                 <div className="wcc-pvzList">
                   {filteredPvz.map((item) => (
@@ -727,8 +506,8 @@ export function OrderModal({ open, items, onItemsChange, onClose }: OrderModalPr
                       <input
                         type="radio"
                         name="pvz"
-                        checked={selectedPvz === item.id}
-                        onChange={() => setSelectedPvz(item.id)}
+                        checked={state.selectedPvz === item.id}
+                        onChange={() => setValue("selectedPvz", item.id)}
                       />
                       <div>
                         <div className="wcc-pvzItem__name">{item.name}</div>
@@ -740,21 +519,21 @@ export function OrderModal({ open, items, onItemsChange, onClose }: OrderModalPr
                 </div>
               </>
             )}
-            {pvzTab === "map" && (
+            {state.pvzTab === "map" && (
               <div className="wcc-pvzMap">
                 Очень красивая и подробная карта
-                <span>г. {city || "Не указан"}</span>
+                <span>г. {state.city || "Не указан"}</span>
               </div>
             )}
             <div className="wcc-orderSubModal__actions">
-              <button className="wcc-action-btn" type="button" onClick={() => setPvzOpen(false)}>
+              <button className="wcc-action-btn" type="button" onClick={() => setValue("pvzOpen", false)}>
                 Отменить
               </button>
               <button
                 className="wcc-action-btn wcc-action-btn--primary"
                 type="button"
-                onClick={() => setPvzOpen(false)}
-                disabled={!selectedPvz}
+                onClick={() => setValue("pvzOpen", false)}
+                disabled={!state.selectedPvz}
               >
                 Подтвердить выбор
               </button>
@@ -762,7 +541,6 @@ export function OrderModal({ open, items, onItemsChange, onClose }: OrderModalPr
           </div>
         </div>
       )}
-
     </div>
   );
 }

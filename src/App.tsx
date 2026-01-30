@@ -1,4 +1,3 @@
-import React from "react";
 import { AppShell } from "./widgets/layout/AppShell";
 import { Agentation } from "agentation";
 

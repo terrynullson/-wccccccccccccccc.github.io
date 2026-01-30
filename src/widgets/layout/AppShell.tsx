@@ -2,7 +2,7 @@
 import { TopBar } from "../topbar/TopBar";
 import { SideMenu } from "../sideMenu/SideMenu";
 import { OrderModal } from "../modals/OrderModal";
-import type { OrderItem } from "../modals/OrderModal";
+import type { OrderItem } from "../../data/order";
 import { ClientPanel } from "./ClientPanel";
 import { OrderPreviewPanel } from "./OrderPreviewPanel";
 import "./appShell.css";
