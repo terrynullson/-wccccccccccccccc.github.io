@@ -4,6 +4,8 @@ import "./sideMenu.css";
 type Props = {
   collapsed: boolean;
   onToggle: () => void;
+  activeId: string;
+  onSelect: (id: string) => void;
 };
 
 type Section = {
@@ -109,15 +111,32 @@ const sections: Section[] = [
   },
 ];
 
-export const SideMenu = React.memo(function SideMenu({ collapsed, onToggle }: Props) {
+export const SideMenu = React.memo(function SideMenu({ collapsed, onToggle, activeId, onSelect }: Props) {
   const [openId, setOpenId] = React.useState<string>("cart");
+
+  const parentByChild = React.useMemo(() => {
+    const map = new Map<string, string>();
+    sections.forEach((section) => {
+      section.children?.forEach((child) => map.set(child.id, section.id));
+    });
+    return map;
+  }, []);
+
+  React.useEffect(() => {
+    const parent = parentByChild.get(activeId);
+    if (parent && parent !== openId) {
+      setOpenId(parent);
+    }
+  }, [activeId, openId, parentByChild]);
 
   const handleSectionClick = (id: string, hasChildren: boolean) => {
     if (!hasChildren) {
       setOpenId(id);
+      onSelect(id);
       return;
     }
     setOpenId((prev) => (prev === id ? "" : id));
+    onSelect(id);
   };
 
   return (
@@ -138,11 +157,12 @@ export const SideMenu = React.memo(function SideMenu({ collapsed, onToggle }: Pr
         {sections.map((section) => {
           const isOpen = openId === section.id;
           const hasChildren = Boolean(section.children?.length);
+          const isActive = activeId === section.id;
 
           return (
             <div className="wcc-side__section" key={section.id}>
               <button
-                className={`wcc-side__item ${isOpen ? "is-active" : ""}`}
+                className={`wcc-side__item ${isActive || isOpen ? "is-active" : ""}`}
                 type="button"
                 title={section.label}
                 aria-expanded={hasChildren ? isOpen : undefined}
@@ -164,9 +184,10 @@ export const SideMenu = React.memo(function SideMenu({ collapsed, onToggle }: Pr
                   {section.children?.map((child) => (
                     <button
                       key={child.id}
-                      className="wcc-side__subItem"
+                      className={`wcc-side__subItem ${activeId === child.id ? "is-active" : ""}`}
                       type="button"
                       title={child.label}
+                      onClick={() => onSelect(child.id)}
                     >
                       {child.label}
                     </button>

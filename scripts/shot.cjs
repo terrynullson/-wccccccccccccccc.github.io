@@ -9,6 +9,12 @@ async function setTheme(page, theme) {
   }, { themeName: theme });
 }
 
+async function setZoom(page, zoom) {
+  await page.evaluate((z) => {
+    document.body.style.zoom = String(z);
+  }, zoom);
+}
+
 (async () => {
   const browser = await chromium.launch();
   const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
@@ -20,6 +26,10 @@ async function setTheme(page, theme) {
   }, "light");
   await page.waitForTimeout(80);
   await page.screenshot({ path: "wcc_collapsed_1920.png" });
+  await setZoom(page, 1.25);
+  await page.waitForTimeout(80);
+  await page.screenshot({ path: "wcc_collapsed_1920_zoom.png" });
+  await setZoom(page, 1);
 
   // volume popover
   await page.click('[data-popover-trigger="volume"] button');
@@ -75,6 +85,10 @@ async function setTheme(page, theme) {
   await page.waitForSelector(".wcc-side.is-open", { timeout: 2000 });
   await new Promise((r) => setTimeout(r, 200));
   await page.screenshot({ path: "wcc_expanded_1920.png" });
+  await setZoom(page, 1.25);
+  await page.waitForTimeout(80);
+  await page.screenshot({ path: "wcc_expanded_1920_zoom.png" });
+  await setZoom(page, 1);
 
   await page.close();
   const pageDark = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
@@ -85,10 +99,17 @@ async function setTheme(page, theme) {
   }, "dark");
   await pageDark.waitForTimeout(80);
   await pageDark.screenshot({ path: "wcc_collapsed_1920_dark.png" });
+  await setZoom(pageDark, 1.25);
+  await pageDark.waitForTimeout(80);
+  await pageDark.screenshot({ path: "wcc_collapsed_1920_dark_zoom.png" });
+  await setZoom(pageDark, 1);
   await pageDark.click(".wcc-side__burger");
   await pageDark.waitForSelector(".wcc-side.is-open", { timeout: 2000 });
   await new Promise((r) => setTimeout(r, 200));
   await pageDark.screenshot({ path: "wcc_expanded_1920_dark.png" });
+  await setZoom(pageDark, 1.25);
+  await pageDark.waitForTimeout(80);
+  await pageDark.screenshot({ path: "wcc_expanded_1920_dark_zoom.png" });
 
   await browser.close();
 })().catch((err) => {

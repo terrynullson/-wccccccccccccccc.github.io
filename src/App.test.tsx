@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+﻿import { render, screen } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
 import App from "./App";
 
@@ -12,12 +12,12 @@ describe("App", () => {
   it("рендерит боковое меню с разделами", () => {
     render(<App />);
     expect(screen.getByRole("navigation", { name: "Разделы" })).toBeInTheDocument();
-    expect(screen.getByTitle("Раздел 1")).toBeInTheDocument();
+    expect(screen.getAllByTitle("Корзина").length).toBeGreaterThan(0);
   });
 
-  it("рендерит вкладки «Основная информация» и «Корзина сайта»", () => {
+  it("рендерит вкладки клиента", () => {
     render(<App />);
-    expect(screen.getByRole("tab", { name: "Основная информация" })).toBeInTheDocument();
-    expect(screen.getByRole("tab", { name: "Корзина сайта" })).toBeInTheDocument();
+    expect(screen.getByRole("tab", { name: "Осн.инф." })).toBeInTheDocument();
+    expect(screen.getByRole("tab", { name: "Парковка" })).toBeInTheDocument();
   });
 });

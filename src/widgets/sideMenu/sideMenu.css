@@ -1,32 +1,33 @@
-﻿.wcc-side {
+.wcc-side {
   display: flex;
   flex-direction: column;
   gap: 4px;
   width: var(--side-menu-w, var(--side-w-collapsed, 56px));
-  position: absolute;
-  left: 0;
-  top: 0;
+  position: fixed;
+  left: var(--page-pad-x, 12px);
+  top: calc(var(--topbar-h) + 8px);
   z-index: 40;
   padding: 8px 0 12px;
   border-radius: var(--radius-ui, 16px);
   border: none;
-  background: var(--c-surface);
-  box-shadow: var(--shadow-1);
+  background: var(--glass-bg);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(var(--glass-blur));
   overflow: hidden;
   transition: width 180ms ease, background 180ms ease, box-shadow 180ms ease;
+  height: calc(100vh - var(--topbar-h) - 16px);
   --side-pad-left: 12px;
   --side-pad-right: 12px;
   --side-icon-col: 32px;
 }
 
 [data-theme="dark"] .wcc-side {
-  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.6);
-  outline: 1px solid rgba(255, 255, 255, 0.1);
-  background: var(--c-surface);
+  box-shadow: none;
+  background: linear-gradient(160deg, rgba(36, 42, 58, 0.92), rgba(28, 34, 48, 0.92));
 }
 
 .wcc-side.is-open {
-  box-shadow: var(--shadow-2);
+  box-shadow: var(--glass-shadow-strong);
 }
 
 .wcc-side__burger {
@@ -34,8 +35,9 @@
   height: var(--side-icon-col);
   border-radius: var(--radius-ui, 16px);
   border: none;
-  background: var(--c-surface);
-  box-shadow: var(--shadow-1);
+  background: var(--glass-bg);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(var(--glass-blur));
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -48,12 +50,12 @@
 }
 
 .wcc-side__burger:hover {
-  box-shadow: var(--shadow-2);
+  box-shadow: var(--glass-shadow-strong), var(--c-glow);
 }
 
 .wcc-side__burger:focus-visible {
   outline: none;
-  box-shadow: none;
+  box-shadow: 0 0 0 3px var(--c-focus), var(--glass-shadow);
 }
 
 .wcc-side__burger span {
@@ -69,11 +71,19 @@
   background: rgba(247, 243, 236, 0.78);
 }
 
+[data-theme="dark"] .wcc-side.is-open,
+[data-theme="dark"] .wcc-side__burger,
+[data-theme="dark"] .wcc-side__burger:hover {
+  box-shadow: none;
+}
+
 .wcc-side__menu {
   display: flex;
   flex-direction: column;
   gap: 4px;
   padding: 4px 0 0;
+  overflow-y: auto;
+  max-height: calc(100vh - var(--topbar-h) - 40px);
 }
 
 .wcc-side__section {
@@ -101,13 +111,13 @@
 }
 
 .wcc-side__item:hover {
-  background: var(--c-surface);
-  box-shadow: var(--shadow-1);
+  background: var(--glass-bg-strong);
+  box-shadow: var(--glass-shadow), var(--c-glow);
 }
 
 .wcc-side__item.is-active {
-  background: var(--c-surface);
-  box-shadow: inset 0 0 0 1px rgba(123, 117, 184, 0.18);
+  background: var(--glass-bg-strong);
+  box-shadow: var(--c-glow-strong);
   color: var(--c-ink);
 }
 
@@ -161,8 +171,8 @@
 .wcc-side__subItem {
   height: 32px;
   border-radius: 10px 0 0 10px;
-  border: 1px solid rgba(123, 117, 184, 0.12);
-  background: rgba(255, 255, 255, 0.4);
+  border: none;
+  background: var(--glass-bg-soft);
   text-align: left;
   font-size: 12px;
   color: rgba(45, 38, 23, 0.8);
@@ -172,8 +182,12 @@
 }
 
 .wcc-side__subItem:hover {
-  background: rgba(123, 117, 184, 0.12);
-  border-color: rgba(123, 117, 184, 0.28);
+  background: rgba(123, 117, 184, 0.18);
+}
+
+.wcc-side__subItem.is-active {
+  background: rgba(123, 117, 184, 0.22);
+  color: var(--c-ink);
 }
 
 [data-theme="dark"] .wcc-side__icon {
@@ -189,13 +203,13 @@
 }
 
 [data-theme="dark"] .wcc-side__item:hover {
-  background: rgba(255, 255, 255, 0.04);
-  box-shadow: var(--shadow-1);
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: var(--c-glow);
 }
 
 [data-theme="dark"] .wcc-side__item.is-active {
-  background: rgba(155, 147, 224, 0.2);
-  box-shadow: inset 0 0 0 1px rgba(155, 147, 224, 0.38);
+  background: rgba(155, 147, 224, 0.22);
+  box-shadow: var(--c-glow-strong);
   color: var(--c-ink);
 }
 
@@ -208,14 +222,17 @@
 }
 
 [data-theme="dark"] .wcc-side__subItem {
-  background: rgba(255, 255, 255, 0.03);
-  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.05);
   color: rgba(244, 239, 230, 0.78);
 }
 
 [data-theme="dark"] .wcc-side__subItem:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(155, 147, 224, 0.4);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .wcc-side__subItem.is-active {
+  background: rgba(155, 147, 224, 0.28);
+  color: rgba(244, 239, 230, 0.95);
 }
 
 .wcc-side.is-collapsed .wcc-side__item {
@@ -244,7 +261,6 @@
 }
 
 
-/* Свернутое меню: три горизонтальные полоски, ближе друг к другу */
 .wcc-side__burger.is-collapsed {
   flex-direction: column;
   gap: 3px;
@@ -260,7 +276,6 @@
   opacity: 1;
 }
 
-/* Развернутое меню: иконка ".I." (точка — вертикальная черта — точка) */
 .wcc-side__burger.is-open {
   flex-direction: row;
   gap: 3px;

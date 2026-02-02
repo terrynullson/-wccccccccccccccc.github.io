@@ -10,7 +10,8 @@
 .wcc-modal__backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.35);
+  background: transparent;
+  backdrop-filter: none;
 }
 
 .wcc-modal__body {
@@ -19,6 +20,12 @@
   min-width: 320px;
   padding: 16px;
   border-radius: 16px;
-  background: var(--c-surface);
-  box-shadow: var(--shadow-2);
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  box-shadow: var(--glass-shadow-strong);
+  backdrop-filter: blur(calc(var(--glass-blur) + 32px)) saturate(160%);
+}
+
+[data-theme="dark"] .wcc-modal__body {
+  background: rgba(20, 24, 34, 0.5);
 }

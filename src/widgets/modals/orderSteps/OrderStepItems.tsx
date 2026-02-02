@@ -1,4 +1,4 @@
-import type { OrderItem } from "../OrderModal";
+﻿import type { OrderItem } from "../OrderModal";
 
 type Props = {
   items: OrderItem[];
@@ -30,63 +30,76 @@ export function OrderStepItems({
   formatCurrency,
 }: Props) {
   return (
-    <div className="wcc-orderModal__card">
-      <div className="wcc-orderModal__section">
-        <div className="wcc-orderModal__sectionTitle">Корзина</div>
-        <div className="wcc-orderModal__list">
-          {items.map((item) => (
-            <div key={item.id} className="wcc-orderItem">
-              <div>
-                <div className="wcc-orderItem__title">{item.title}</div>
-                <div className="wcc-orderItem__meta">{item.meta}</div>
-              </div>
-              <div className="wcc-orderItem__qty">
-                <button
-                  type="button"
-                  className="wcc-orderItem__qtyBtn"
-                  onClick={() =>
-                    onUpdateItem(item.id, (it) => ({
-                      ...it,
-                      quantity: Math.max(1, (it.quantity || 1) - 1),
-                    }))
-                  }
-                >
-                  −
+    <>
+      <div className="wcc-orderModal__card">
+        <div className="wcc-orderModal__section">
+          <div className="wcc-orderModal__sectionTitle">Корзина</div>
+          <div className="wcc-orderModal__list">
+            {items.map((item) => (
+              <div key={item.id} className="wcc-orderItem">
+                <div>
+                  <div className="wcc-orderItem__title">{item.title}</div>
+                  <div className="wcc-orderItem__meta">{item.meta}</div>
+                </div>
+                <div className="wcc-orderItem__qty">
+                  <button
+                    type="button"
+                    className="wcc-orderItem__qtyBtn"
+                    onClick={() =>
+                      onUpdateItem(item.id, (it) => ({
+                        ...it,
+                        quantity: Math.max(1, (it.quantity || 1) - 1),
+                      }))
+                    }
+                  >
+                    –
+                  </button>
+                  <span>{item.quantity || 1}</span>
+                  <button
+                    type="button"
+                    className="wcc-orderItem__qtyBtn"
+                    onClick={() =>
+                      onUpdateItem(item.id, (it) => ({
+                        ...it,
+                        quantity: (it.quantity || 1) + 1,
+                      }))
+                    }
+                  >
+                    +
+                  </button>
+                </div>
+                <div className="wcc-orderItem__price">{formatCurrency(item.price * (item.quantity || 1))}</div>
+                <button className="wcc-orderItem__remove" type="button" onClick={() => onRemoveItem(item.id)}>
+                  Убрать
                 </button>
-                <span>{item.quantity || 1}</span>
-                <button
-                  type="button"
-                  className="wcc-orderItem__qtyBtn"
-                  onClick={() =>
-                    onUpdateItem(item.id, (it) => ({
-                      ...it,
-                      quantity: (it.quantity || 1) + 1,
-                    }))
-                  }
-                >
-                  +
-                </button>
               </div>
-              <div className="wcc-orderItem__price">{formatCurrency(item.price * (item.quantity || 1))}</div>
-              <button className="wcc-orderItem__remove" type="button" onClick={() => onRemoveItem(item.id)}>
-                Убрать
-              </button>
-            </div>
-          ))}
-        </div>
-        <div className="wcc-orderSummary">
-          <div className="wcc-orderSummary__row">
-            <span>Товары</span>
-            <span>{formatCurrency(itemsAmount)}</span>
+            ))}
           </div>
-          <div className="wcc-orderSummary__row wcc-orderSummary__row--total">
-            <span>Сумма заказа</span>
-            <span>{formatCurrency(totalWithoutDelivery)}</span>
+          <div className="wcc-orderSummary">
+            <div className="wcc-orderSummary__row">
+              <span>Товары</span>
+              <span>{formatCurrency(itemsAmount)}</span>
+            </div>
+            <div className="wcc-orderSummary__row wcc-orderSummary__row--total">
+              <span>Сумма заказа</span>
+              <span>{formatCurrency(totalWithoutDelivery)}</span>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="wcc-orderModal__section">
+      <div className="wcc-orderModal__card wcc-orderModal__card--sub wcc-orderModal__card--comment">
+        <div className="wcc-orderModal__sectionTitle">Комментарий к заказу</div>
+        <textarea
+          className="wcc-input wcc-input--textarea"
+          rows={3}
+          placeholder="Добавьте важные детали по заказу"
+          value={orderComment}
+          onChange={(e) => onOrderCommentChange(e.target.value)}
+        />
+      </div>
+
+      <div className="wcc-orderModal__card wcc-orderModal__card--sub wcc-orderModal__card--source">
         <div className="wcc-orderModal__sectionTitle">Источник</div>
         <select className="wcc-input" value={source} onChange={(e) => onSourceChange(e.target.value)}>
           <option value="">Выберите источник</option>
@@ -99,22 +112,12 @@ export function OrderStepItems({
         )}
       </div>
 
-      <div className="wcc-orderModal__section">
-        <textarea
-          className="wcc-input wcc-input--textarea"
-          rows={3}
-          placeholder="Комментарий к заказу"
-          value={orderComment}
-          onChange={(e) => onOrderCommentChange(e.target.value)}
-        />
-      </div>
-
       <div className="wcc-orderModal__actions wcc-orderModal__actions--between">
         <div />
         <button className="wcc-arrowBtn" type="button" onClick={onNext}>
           →
         </button>
       </div>
-    </div>
+    </>
   );
 }

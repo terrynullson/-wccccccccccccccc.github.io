@@ -22,6 +22,7 @@ type OrderModalProps = {
   items: OrderItem[];
   onItemsChange: (items: OrderItem[]) => void;
   onClose: () => void;
+  resetToken?: number;
 };
 
 type OrderFormState = {
@@ -106,7 +107,7 @@ function formatCurrency(value: number) {
   return value.toLocaleString("ru-RU") + " ₽";
 }
 
-export function OrderModal({ open, items, onItemsChange, onClose }: OrderModalProps) {
+export function OrderModal({ open, items, onItemsChange, onClose, resetToken = 0 }: OrderModalProps) {
   const [state, dispatch] = React.useReducer(reducer, initialState);
   const [dragOffset, setDragOffset] = React.useState({ x: 0, y: 0 });
   const dragRef = React.useRef({ dragging: false, startX: 0, startY: 0, baseX: 0, baseY: 0 });
@@ -179,11 +180,26 @@ export function OrderModal({ open, items, onItemsChange, onClose }: OrderModalPr
 
   React.useEffect(() => {
     if (!open) return;
+    setDragOffset({ x: 0, y: 0 });
+  }, [resetToken, open]);
+
+  React.useEffect(() => {
+    if (!open) return;
     const move = (event: MouseEvent) => {
       if (!dragRef.current.dragging) return;
       const dx = event.clientX - dragRef.current.startX;
       const dy = event.clientY - dragRef.current.startY;
-      setDragOffset({ x: dragRef.current.baseX + dx, y: dragRef.current.baseY + dy });
+      const node = modalBodyRef.current;
+      if (!node) return;
+      const rect = node.getBoundingClientRect();
+      const margin = 24;
+      const maxX = Math.max(0, (window.innerWidth - rect.width) / 2 - margin);
+      const maxY = Math.max(0, (window.innerHeight - rect.height) / 2 - margin);
+      const nextX = dragRef.current.baseX + dx;
+      const nextY = dragRef.current.baseY + dy;
+      const clampedX = Math.min(maxX, Math.max(-maxX, nextX));
+      const clampedY = Math.min(maxY, Math.max(-maxY, nextY));
+      setDragOffset({ x: clampedX, y: clampedY });
     };
     const stop = () => {
       dragRef.current.dragging = false;
@@ -362,7 +378,7 @@ export function OrderModal({ open, items, onItemsChange, onClose }: OrderModalPr
   );
 
   return (
-    <div className="wcc-modal wcc-orderModal" role="dialog" aria-modal="true" aria-labelledby={titleId}>
+    <div className="wcc-modal wcc-orderModal" role="dialog" aria-modal="false" aria-labelledby={titleId}>
       <div className="wcc-modal__backdrop" />
       <div
         className="wcc-modal__body wcc-orderModal__body"
@@ -402,65 +418,71 @@ export function OrderModal({ open, items, onItemsChange, onClose }: OrderModalPr
 
         {state.activeStep === 1 && (
           <div className="wcc-orderModal__content">
-            <OrderStepItems
-              items={items}
-              itemsAmount={itemsAmount}
-              totalWithoutDelivery={totalWithoutDelivery}
-              source={state.source}
-              sourceError={state.sourceError}
-              orderComment={state.orderComment}
-              onUpdateItem={updateItem}
-              onRemoveItem={removeItem}
-              onSourceChange={(value) => setValue("source", value)}
-              onOrderCommentChange={(value) => setValue("orderComment", value)}
-              onNext={() => setStepSafe(2)}
-              formatCurrency={formatCurrency}
-            />
+            <div className="wcc-orderModal__main">
+              <OrderStepItems
+                items={items}
+                itemsAmount={itemsAmount}
+                totalWithoutDelivery={totalWithoutDelivery}
+                source={state.source}
+                sourceError={state.sourceError}
+                orderComment={state.orderComment}
+                onUpdateItem={updateItem}
+                onRemoveItem={removeItem}
+                onSourceChange={(value) => setValue("source", value)}
+                onOrderCommentChange={(value) => setValue("orderComment", value)}
+                onNext={() => setStepSafe(2)}
+                formatCurrency={formatCurrency}
+              />
+            </div>
             {summaryCard}
           </div>
         )}
 
         {state.activeStep === 2 && (
           <div className="wcc-orderModal__content">
-            <OrderStepDelivery
-              fullName={state.fullName}
-              phone={state.phone}
-              country={state.country}
-              region={state.region}
-              postalCode={state.postalCode}
-              city={state.city}
-              street={state.street}
-              house={state.house}
-              apartment={state.apartment}
-              carrier={state.carrier}
-              deliveryDate={state.deliveryDate}
-              deliveryTime={state.deliveryTime}
-              deliveryDeferral={state.deliveryDeferral}
-              carrierComment={state.carrierComment}
-              addressError={state.addressError}
-              visibleCarriers={visibleCarriers}
-              pvzEnabled={pvzCarriers.includes(state.carrier as (typeof pvzCarriers)[number])}
-              onOpenPvz={() => setValue("pvzOpen", true)}
-              onChange={(key, value) => setValue(key as keyof OrderFormState, value)}
-              onChangeNumber={(key, value) => setValue(key as keyof OrderFormState, value)}
-              onCarrierChange={(value) => setValue("carrier", value)}
-              onBack={() => setStepSafe(1)}
-              onNext={() => setStepSafe(3)}
-            />
+            <div className="wcc-orderModal__main">
+              <OrderStepDelivery
+                fullName={state.fullName}
+                phone={state.phone}
+                country={state.country}
+                region={state.region}
+                postalCode={state.postalCode}
+                city={state.city}
+                street={state.street}
+                house={state.house}
+                apartment={state.apartment}
+                carrier={state.carrier}
+                deliveryDate={state.deliveryDate}
+                deliveryTime={state.deliveryTime}
+                deliveryDeferral={state.deliveryDeferral}
+                carrierComment={state.carrierComment}
+                addressError={state.addressError}
+                visibleCarriers={visibleCarriers}
+                pvzEnabled={pvzCarriers.includes(state.carrier as (typeof pvzCarriers)[number])}
+                onOpenPvz={() => setValue("pvzOpen", true)}
+                onChange={(key, value) => setValue(key as keyof OrderFormState, value)}
+                onChangeNumber={(key, value) => setValue(key as keyof OrderFormState, value)}
+                onCarrierChange={(value) => setValue("carrier", value)}
+                onBack={() => setStepSafe(1)}
+                onNext={() => setStepSafe(3)}
+              />
+            </div>
             {summaryCard}
           </div>
         )}
 
         {state.activeStep === 3 && (
           <div className="wcc-orderModal__content">
-            <OrderStepPayment
-              payment={state.payment}
-              visiblePayments={visiblePayments}
-              finalMessage={state.finalMessage}
-              onPaymentChange={(value) => setValue("payment", value)}
-              onBack={() => setStepSafe(2)}
-              onConfirm={() => setValue("finalMessage", true)}
-            />
+            <div className="wcc-orderModal__main">
+              <OrderStepPayment
+                payment={state.payment}
+                visiblePayments={visiblePayments}
+                finalMessage={state.finalMessage}
+                onPaymentChange={(value) => setValue("payment", value)}
+                onBack={() => setStepSafe(2)}
+                onConfirm={() => setValue("finalMessage", true)}
+              />
+            </div>
             {summaryCard}
           </div>
         )}

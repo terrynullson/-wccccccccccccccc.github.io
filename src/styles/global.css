@@ -7,14 +7,19 @@
 
 html, body {
   height: 100%;
+  scrollbar-gutter: stable;
 }
 
 body {
   margin: 0;
   background:
-    radial-gradient(900px 420px at 8% -12%, rgba(255, 255, 255, 0.7), transparent 60%),
-    radial-gradient(900px 520px at 92% 0%, rgba(209, 125, 82, 0.06), transparent 52%),
+    radial-gradient(900px 480px at 12% -12%, rgba(255, 255, 255, 0.32), transparent 62%),
+    radial-gradient(880px 480px at 92% 0%, rgba(123, 117, 184, 0.06), transparent 58%),
     var(--c-bg);
+  background-repeat: no-repeat;
+  background-position: top center;
+  background-size: cover;
+  background-attachment: fixed;
   color: var(--c-ink);
   font-family: var(--font-sans);
   font-size: var(--fs-14);
@@ -24,13 +29,63 @@ body {
 
 [data-theme="dark"] body {
   background:
-    radial-gradient(980px 520px at 12% -12%, rgba(255, 255, 255, 0.2), transparent 60%),
-    radial-gradient(980px 520px at 92% 0%, rgba(209, 125, 82, 0.16), transparent 55%),
+    radial-gradient(900px 520px at 18% -8%, rgba(122, 162, 255, 0.18), transparent 62%),
+    radial-gradient(920px 520px at 88% 0%, rgba(139, 211, 255, 0.14), transparent 58%),
+    radial-gradient(820px 520px at 50% 110%, rgba(161, 182, 255, 0.12), transparent 60%),
     var(--c-bg);
+  background-repeat: no-repeat;
+  background-position: top center;
+  background-size: cover;
+  background-attachment: fixed;
 }
 
 button, input {
   font-family: inherit;
+}
+
+/* Custom scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(123, 117, 184, 0.5) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgba(123, 117, 184, 0.45);
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background-clip: content-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(123, 117, 184, 0.65);
+  background-clip: content-box;
+}
+
+[data-theme="dark"] * {
+  scrollbar-color: rgba(122, 162, 255, 0.55) transparent;
+}
+
+[data-theme="dark"] *::-webkit-scrollbar-thumb {
+  background: rgba(122, 162, 255, 0.45);
+  background-clip: content-box;
+}
+
+[data-theme="dark"] *::-webkit-scrollbar-thumb:hover {
+  background: rgba(122, 162, 255, 0.7);
+  background-clip: content-box;
+}
+
+[data-theme="dark"] .wcc-app * {
+  box-shadow: none !important;
 }
 
 a.wcc-input,
@@ -38,15 +93,44 @@ input.wcc-input,
 select.wcc-input,
 textarea.wcc-input {
   background: var(--c-input-bg);
-  border: 1px solid var(--c-input-border);
+  border: none;
   color: var(--c-ink);
+}
+
+a.wcc-input:hover,
+input.wcc-input:hover,
+select.wcc-input:hover,
+textarea.wcc-input:hover {
+  background: var(--c-input-bg-2);
+}
+
+[data-theme="dark"] a.wcc-input,
+[data-theme="dark"] input.wcc-input,
+[data-theme="dark"] select.wcc-input,
+[data-theme="dark"] textarea.wcc-input {
+  border-color: transparent;
+}
+
+[data-theme="dark"] a.wcc-input:hover,
+[data-theme="dark"] input.wcc-input:hover,
+[data-theme="dark"] select.wcc-input:hover,
+[data-theme="dark"] textarea.wcc-input:hover {
+  border-color: transparent;
+}
+
+a.wcc-input:disabled,
+input.wcc-input:disabled,
+select.wcc-input:disabled,
+textarea.wcc-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 a.wcc-input:focus-visible,
 input.wcc-input:focus-visible,
 select.wcc-input:focus-visible,
 textarea.wcc-input:focus-visible {
-  box-shadow: 0 0 0 3px var(--c-focus);
+  box-shadow: none;
   border-color: transparent;
 }
 
@@ -56,8 +140,9 @@ a {
 }
 
 :focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 3px var(--c-focus);
+  outline: 2px solid var(--c-focus);
+  outline-offset: 2px;
+  box-shadow: none;
   border-radius: 12px;
 }
 
@@ -65,7 +150,8 @@ button:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 3px var(--c-focus);
+  outline: 2px solid var(--c-focus);
+  outline-offset: 2px;
+  box-shadow: none;
 }
 

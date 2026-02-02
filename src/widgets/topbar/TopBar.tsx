@@ -87,6 +87,7 @@ type ActivePanel = "volume" | "dial" | "pause" | null;
 
 export function TopBar({ initialWorking = false }: TopBarProps) {
   const topbarRef = React.useRef<HTMLElement | null>(null);
+  const telephonyRef = React.useRef<HTMLDivElement | null>(null);
   // shift (toggle)
   const [working, setWorking] = React.useState(initialWorking);
   const [paused, setPaused] = React.useState(false);
@@ -120,6 +121,8 @@ export function TopBar({ initialWorking = false }: TopBarProps) {
   const [volume, setVolume] = React.useState(50);
   const [dialNumber, setDialNumber] = React.useState("");
   const [telephony4Active, setTelephony4Active] = React.useState(false);
+  const [telephonyCompact, setTelephonyCompact] = React.useState(false);
+  const [telephonyExpanded, setTelephonyExpanded] = React.useState(false);
 
   // pause reasons
   const [pauseReason, setPauseReason] = React.useState("");
@@ -185,6 +188,33 @@ export function TopBar({ initialWorking = false }: TopBarProps) {
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
   }, [activePanel, profileOpen]);
+
+  React.useEffect(() => {
+    const updateCompact = () => {
+      const width = topbarRef.current?.offsetWidth ?? window.innerWidth;
+      const compact = width < 1480;
+      setTelephonyCompact(compact);
+      if (!compact) setTelephonyExpanded(false);
+    };
+    updateCompact();
+
+    let ro: ResizeObserver | null = null;
+    if ("ResizeObserver" in window && topbarRef.current) {
+      ro = new ResizeObserver(updateCompact);
+      ro.observe(topbarRef.current);
+    }
+    window.addEventListener("resize", updateCompact);
+    return () => {
+      window.removeEventListener("resize", updateCompact);
+      ro?.disconnect();
+    };
+  }, []);
+
+  React.useEffect(() => {
+    if (telephonyCompact && !telephonyExpanded && activePanel) {
+      setActivePanel(null);
+    }
+  }, [telephonyCompact, telephonyExpanded, activePanel]);
 
   const telephony = [
     { id: 1, title: "Звонок", icon: p1 },
@@ -252,6 +282,8 @@ export function TopBar({ initialWorking = false }: TopBarProps) {
   const dialPopoverId = "wcc-popover-dial";
   const pausePopoverId = "wcc-popover-pause";
   const profileMenuId = "wcc-profile-menu";
+  const visibleTelephony =
+    telephonyCompact && !telephonyExpanded ? telephony.slice(0, 1) : telephony;
 
   return (
     <header className="wcc-topbar" role="banner" ref={topbarRef}>
@@ -298,8 +330,11 @@ export function TopBar({ initialWorking = false }: TopBarProps) {
       </div>
 
       <div className="wcc-topbar__telephony" aria-label={STR.telephonyPanel}>
-        <div className="wcc-telephony">
-          {telephony.map((b) => {
+        <div
+          ref={telephonyRef}
+          className={`wcc-telephony ${telephonyCompact ? "is-compact" : ""}`}
+        >
+          {visibleTelephony.map((b) => {
             const isCallButton = b.id === 1;
             const isActiveCall = isCallButton && inCall;
             const isVolume = b.id === 7;
@@ -419,6 +454,18 @@ export function TopBar({ initialWorking = false }: TopBarProps) {
               </div>
             );
           })}
+          {telephonyCompact && (
+            <div className="wcc-telephony__item">
+              <IconButton
+                title={telephonyExpanded ? "Свернуть телефонию" : "Показать телефонию"}
+                onClick={() => setTelephonyExpanded((v) => !v)}
+                className="wcc-telephony__more"
+                aria-pressed={telephonyExpanded}
+              >
+                <span className="wcc-telephony__moreIcon">{telephonyExpanded ? "×" : "⋯"}</span>
+              </IconButton>
+            </div>
+          )}
         </div>
       </div>
 

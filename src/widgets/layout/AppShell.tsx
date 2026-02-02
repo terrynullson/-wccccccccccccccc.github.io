@@ -17,9 +17,11 @@ export function AppShell() {
   const [orderModalOpen, setOrderModalOpen] = React.useState(false);
   const [orderItems, setOrderItems] = React.useState<OrderItem[]>(orderItemsSeed);
   const [crossSell, setCrossSell] = React.useState<Record<string, boolean>>({});
+  const [orderModalReset, setOrderModalReset] = React.useState(0);
+  const [activeSection, setActiveSection] = React.useState("cart");
   const sideMenuWidth = sideCollapsed ? "var(--side-w-collapsed)" : "var(--side-w)";
+  const sideMenuPad = "var(--side-w-collapsed)";
   const toggleSide = React.useCallback(() => setSideCollapsed((v) => !v), []);
-  const sideWrapRef = React.useRef<HTMLDivElement>(null);
   const updateItemQty = React.useCallback((id: string, delta: number) => {
     setOrderItems((prev) =>
       prev.map((item) =>
@@ -31,38 +33,54 @@ export function AppShell() {
     setCrossSell((prev) => ({ ...prev, [id]: !prev[id] }));
   }, []);
 
-  React.useEffect(() => {
-    if (sideCollapsed) return;
+  const handleOpenOrder = React.useCallback(() => {
+    setOrderModalOpen(true);
+    setOrderModalReset((prev) => prev + 1);
+  }, []);
 
-    const handleOutside = (event: MouseEvent | TouchEvent) => {
-      const target = event.target as Node | null;
-      if (!target) return;
-      const wrap = sideWrapRef.current;
-      if (!wrap) return;
-      if (wrap.contains(target)) return;
-      setSideCollapsed(true);
-    };
+  const pageTitles: Record<string, string> = {
+    cart: "Корзина",
+    "cart-main": "Корзина",
+    "cart-lots": "Лоты в корзине",
+    "listen-okk": "Прослушка от ОКК",
+    "listen-okk-sv": "Прослушка ОКК СВ",
+    alerts: "Уведомления",
+    orders: "Заказы",
+    tm: "Телемаркетолог",
+    "tm-park-request": "Запрос на перепарковку",
+    "tm-unpark-mass": "Массовая отпарковка",
+    "tm-task-mass": "Массовая постановка задач",
+    "tm-park-settings": "Настройки парковки",
+    "tm-segments": "Панель управления Сегментами",
+    "tm-profile": "Профиль ТМ",
+    "tm-refusals": "Управление категорическими отказами",
+    blacklist: "Чёрный список",
+  };
 
-    document.addEventListener("mousedown", handleOutside);
-    document.addEventListener("touchstart", handleOutside, { passive: true });
-
-    return () => {
-      document.removeEventListener("mousedown", handleOutside);
-      document.removeEventListener("touchstart", handleOutside);
-    };
-  }, [sideCollapsed]);
+  const activePageTitle = pageTitles[activeSection] ?? "Контент страницы";
 
   return (
-    <div className="wcc-app" style={{ ["--side-menu-w" as string]: sideMenuWidth }}>
+    <div
+      className="wcc-app"
+      style={{
+        ["--side-menu-w" as string]: sideMenuWidth,
+        ["--side-menu-pad" as string]: sideMenuPad,
+      }}
+    >
       <TopBar />
 
       <div className="wcc-layout">
-        <div ref={sideWrapRef} className="wcc-sideWrap">
-          <SideMenu collapsed={sideCollapsed} onToggle={toggleSide} />
+        <div className="wcc-sideWrap">
+          <SideMenu
+            collapsed={sideCollapsed}
+            onToggle={toggleSide}
+            activeId={activeSection}
+            onSelect={(id) => setActiveSection(id)}
+          />
         </div>
 
         <main className="wcc-workspace">
-          <div className="wcc-card wcc-card--placeholder">Контент страницы будет здесь...</div>
+          <div className="wcc-card wcc-card--placeholder">{activePageTitle}</div>
         </main>
 
         <aside className="wcc-right">
@@ -71,7 +89,7 @@ export function AppShell() {
             crossSell={crossSell}
             onToggleCrossSell={toggleCrossSell}
             onUpdateQty={updateItemQty}
-            onOpenOrder={() => setOrderModalOpen(true)}
+            onOpenOrder={handleOpenOrder}
           />
 
           <ClientPanel />
@@ -83,6 +101,7 @@ export function AppShell() {
         items={orderItems}
         onItemsChange={setOrderItems}
         onClose={() => setOrderModalOpen(false)}
+        resetToken={orderModalReset}
       />
     </div>
   );

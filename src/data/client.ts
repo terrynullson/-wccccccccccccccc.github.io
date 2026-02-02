@@ -3,6 +3,7 @@
   label: string;
   value: string;
   type?: "text" | "email" | "tel";
+  span?: 1 | 2 | 3;
 };
 
 export const clientMainFields: ClientField[] = [
@@ -15,10 +16,10 @@ export const clientMainFields: ClientField[] = [
 ];
 
 export const clientContactFields: ClientField[] = [
-  { id: "client-phone-main", label: "Телефон", value: "+7 909 953-75-59", type: "tel" },
-  { id: "client-phone-alt", label: "Доп.тел", value: "+7 909 953-75-59", type: "tel" },
-  { id: "client-phone-work", label: "Раб.тел", value: "+7 909 953-75-59", type: "tel" },
-  { id: "client-email", label: "E-mail", value: "dableev@ves-contact.com", type: "email" },
+  { id: "client-phone-main", label: "Телефон", value: "+7 909 953-75-59", type: "tel", span: 2 },
+  { id: "client-phone-alt", label: "Доп.тел", value: "+7 909 953-75-59", type: "tel", span: 2 },
+  { id: "client-phone-work", label: "Раб.тел", value: "+7 909 953-75-59", type: "tel", span: 2 },
+  { id: "client-email", label: "E-mail", value: "dableev@ves-contact.com", type: "email", span: 2 },
 ];
 
 export const clientAddressFields: ClientField[] = [
