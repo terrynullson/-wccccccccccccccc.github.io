@@ -1,8 +1,10 @@
-﻿import { defineConfig } from "vite";
+import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import svgr from "vite-plugin-svgr";
 
-const base = process.env.BASE_PATH ?? "/";
+const repoName = process.env.GITHUB_REPOSITORY?.split("/")[1];
+const defaultBase = process.env.GITHUB_ACTIONS === "true" && repoName ? `/${repoName}/` : "/";
+const base = process.env.BASE_PATH ?? defaultBase;
 
 export default defineConfig({
   base,
