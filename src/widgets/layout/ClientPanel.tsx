@@ -1,13 +1,13 @@
-// Import necessary React dependencies
 import React from 'react';
 
 const ClientPanel = () => {
-    // Other code...
+    const [isEmployee] = React.useState(false);
 
-    // Update only to use isEmployee without setIsEmployee
-    const [isEmployee] = React.useState(true);
-
-    // Other code...
+    return (
+        <div>
+            {/* Your component implementation */}
+        </div>
+    );
 };
 
-export default ClientPanel;
+export { ClientPanel };
